@@ -5,7 +5,9 @@ defmodule WebsFlyerWeb.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/api", WebsFlyerWeb do
+  scope "/api", WebsFlyerWeb.API do
     pipe_through :api
+
+    resources "/attributions", AttributionController, as: :api_attribution
   end
 end
