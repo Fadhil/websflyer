@@ -20,6 +20,8 @@ defmodule WebsFlyerWeb.API.AttributionView do
       rs_id: attribution.rs_id,
       status: attribution.status,
       transaction_id: attribution.transaction_id,
-      s2s_post_params: attribution.s2s_post_params}
+      s2s_post_params: attribution.s2s_post_params,
+      created_at: attribution.inserted_at
+    }
   end
 end

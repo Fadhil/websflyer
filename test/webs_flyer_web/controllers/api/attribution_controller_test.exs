@@ -72,7 +72,8 @@ defmodule WebsFlyerWeb.API.AttributionControllerTest do
                "url_params" => "?utm_source=some_affiliate",
                "user_cookie" => "randomcookie",
                "aff_name" => "some_affiliate",
-               "event" => "click"
+               "event" => "click",
+               "created_at" => _created_at
              } = json_response(conn, 201)["data"]
     end
 
