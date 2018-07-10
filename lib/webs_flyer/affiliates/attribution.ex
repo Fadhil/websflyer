@@ -17,7 +17,10 @@ defmodule WebsFlyer.Affiliates.Attribution do
     timestamps()
   end
 
-  @required_attrs [:user_cookie]
+  @required_attrs [:event]
+
+
+  defguard is_valid?(string) when not is_nil(string) and byte_size(string) > 0
 
   @doc false
   def changeset(attribution, attrs) do
@@ -29,8 +32,8 @@ defmodule WebsFlyer.Affiliates.Attribution do
 
   def put_attribution_details(changeset) do
     case changeset do
-      %Ecto.Changeset{valid?: true, changes: %{url_params: url_params}} 
-          when not is_nil(url_params) and byte_size(url_params) > 0 ->
+      %Ecto.Changeset{valid?: true, changes: %{url_params: url_params, user_cookie: user_cookie, event: "click"}} 
+          when is_valid?(url_params) and is_valid?(user_cookie) ->
         put_click_data(changeset, url_params)
       %Ecto.Changeset{valid?: true, changes: %{user_id: user_id}} 
           when not is_nil(user_id) ->
@@ -40,10 +43,10 @@ defmodule WebsFlyer.Affiliates.Attribution do
     end
   end
 
+
   def put_click_data(changeset, url_params) do
     changeset
     |> put_change(:aff_name, get_affiliate_name(url_params))
-    |> put_change(:event, "click")
   end
 
   def get_affiliate_name(params_string) do
