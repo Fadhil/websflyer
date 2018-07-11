@@ -83,6 +83,18 @@ defmodule WebsFlyer.Affiliates do
   def get_media_source!(id), do: Repo.get!(MediaSource, id)
 
   @doc """
+  Gets a single media_source by its aff_name. If more than 1 entries exists,
+  the latest one is returned
+  """
+  def get_media_source_by_name(name) do
+    q = from m in MediaSource,
+        where: m.aff_name == ^name,
+        order_by: [desc: m.inserted_at]
+    Repo.all(q)
+    |> List.first
+  end
+
+  @doc """
   Creates a media_source.
   """
   def create_media_source(attrs \\ %{}) do
@@ -112,5 +124,18 @@ defmodule WebsFlyer.Affiliates do
   """
   def change_media_source(%MediaSource{} = media_source) do
     MediaSource.changeset(media_source, %{})
+  end
+
+  @doc """
+  Returns the `media_source`'s `attribution_window_in_seconds` if it exists
+  or returns the default 86400 seconds (24 hours) if it doesn't
+  """
+  def get_attribution_window(source_name) do
+    one_day_in_seconds = 24 * 60 * 60
+    case get_media_source_by_name(source_name) do
+      nil -> one_day_in_seconds
+      media_source ->
+        media_source.attribution_window_in_seconds || one_day_in_seconds
+    end
   end
 end

@@ -12,10 +12,13 @@ defmodule WebsFlyer.Affiliates.MediaSource do
     timestamps()
   end
 
+  @all_attrs [:name, :aff_name, :attribution_window_in_seconds, :do_postback]
+  @required_attrs [:aff_name]
+
   @doc false
   def changeset(media_source, attrs) do
     media_source
-    |> cast(attrs, [:name, :aff_name, :attribution_window_in_seconds, :do_postback])
-    |> validate_required([:name, :aff_name, :attribution_window_in_seconds, :do_postback])
+    |> cast(attrs, @all_attrs)
+    |> validate_required(@required_attrs)
   end
 end

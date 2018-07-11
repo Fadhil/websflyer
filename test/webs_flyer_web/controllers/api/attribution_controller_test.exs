@@ -78,7 +78,7 @@ defmodule WebsFlyerWeb.API.AttributionControllerTest do
   end
 
   describe "create click attribution with url_params and user_cookie and user_id is nil" do
-    test "renders click attribution with aff_name, event type 'click', user_cookie, url_params, and timestamps",
+    test "renders click attribution with valid details",
          %{conn: conn} do
       conn = post(conn, api_attribution_path(conn, :create), attribution: @anonymous_click_attrs)
       assert %{
