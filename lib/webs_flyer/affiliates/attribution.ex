@@ -18,35 +18,29 @@ defmodule WebsFlyer.Affiliates.Attribution do
   end
 
   @required_attrs [:event]
-
+  @click_required_attrs [:event, :url_params, :user_cookie]
 
   defguard is_valid?(string) when not is_nil(string) and byte_size(string) > 0
 
-  @doc false
   def changeset(attribution, attrs) do
     attribution
     |> cast(attrs, [:url_params, :aff_name, :event, :user_cookie, :user_id, :rs_id, :status, :transaction_id, :s2s_post_params])
     |> validate_required(@required_attrs)
-    |> put_attribution_details()
   end
 
-  def put_attribution_details(changeset) do
-    case changeset do
-      %Ecto.Changeset{valid?: true, changes: %{url_params: url_params, user_cookie: user_cookie, event: "click"}} 
-          when is_valid?(url_params) and is_valid?(user_cookie) ->
-        put_click_data(changeset, url_params)
-      %Ecto.Changeset{valid?: true, changes: %{user_id: user_id}} 
-          when not is_nil(user_id) ->
-        changeset
-      _ ->
-        changeset
-    end
+  def click_changeset(attribution, attrs) do
+    changeset(attribution, attrs)
+    |> validate_required(@click_required_attrs)
+    |> put_click_attribution_details()
   end
 
-
-  def put_click_data(changeset, url_params) do
+  def put_click_attribution_details(%Ecto.Changeset{valid?: true, changes: %{url_params: url_params}} = changeset) do
     changeset
     |> put_change(:aff_name, get_affiliate_name(url_params))
+  end
+
+  def put_click_attribution_details(changeset) do
+    changeset
   end
 
   def get_affiliate_name(params_string) do

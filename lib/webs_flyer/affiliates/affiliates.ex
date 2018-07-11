@@ -45,7 +45,14 @@ defmodule WebsFlyer.Affiliates do
   Required params: `user_cookie`
 
   """
-  def create_attribution(attrs \\ %{}) do
+  def create_attribution(attrs \\ %{})
+  def create_attribution(%{"event" => "click"} = attrs) do
+    %Attribution{}
+    |> Attribution.click_changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def create_attribution(attrs) do
     %Attribution{}
     |> Attribution.changeset(attrs)
     |> Repo.insert()

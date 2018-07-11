@@ -11,8 +11,22 @@ defmodule WebsFlyerWeb.API.AttributionControllerTest do
   @anonymous_click_attrs %{
     url_params: "?utm_source=some_affiliate",
     user_id: nil,
-    user_cookie: "randomcookie"
+    user_cookie: "randomcookie",
+    event: "click"
   }
+
+  @invalid_click_attrs %{
+    url_params: "?utm_source=some_affiliate",
+    user_cookie: nil,
+    event: "click"
+  }
+
+  @invalid_click_attrs2 %{
+    url_params: nil,
+    user_cookie: "somerandomusercookie",
+    event: "click"
+  }
+
   @create_attrs %{
     aff_name: "some aff_name",
     event: "some event",
@@ -63,8 +77,8 @@ defmodule WebsFlyerWeb.API.AttributionControllerTest do
     end
   end
 
-  describe "create attribution with url_params and user_cookie and user_id is nil" do
-    test "renders attribution with aff_name, event type 'click', user_cookie, url_params, and timestamps",
+  describe "create click attribution with url_params and user_cookie and user_id is nil" do
+    test "renders click attribution with aff_name, event type 'click', user_cookie, url_params, and timestamps",
          %{conn: conn} do
       conn = post(conn, api_attribution_path(conn, :create), attribution: @anonymous_click_attrs)
       assert %{
@@ -79,6 +93,20 @@ defmodule WebsFlyerWeb.API.AttributionControllerTest do
 
     test "renders errors when data is invalid", %{conn: conn} do
       conn = post(conn, api_attribution_path(conn, :create), attribution: @invalid_attrs)
+      assert json_response(conn, 422)["errors"] != %{}
+    end
+  end
+
+  describe "create click attribution with url_params but user_cookie is nil" do
+    test "renders a 422 error", %{conn: conn} do
+      conn = post(conn, api_attribution_path(conn, :create), attribution: @invalid_click_attrs)
+      assert json_response(conn, 422)["errors"] != %{}
+    end
+  end
+
+  describe "create click attribution with user_cookie but url_params and user_id is nil" do
+    test "renders a 422 error", %{conn: conn} do
+      conn = post(conn, api_attribution_path(conn, :create), attribution: @invalid_click_attrs2)
       assert json_response(conn, 422)["errors"] != %{}
     end
   end
