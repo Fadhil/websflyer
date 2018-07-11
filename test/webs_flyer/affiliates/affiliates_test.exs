@@ -155,13 +155,13 @@ defmodule WebsFlyer.AffiliatesTest do
       assert 3600 = Affiliates.get_attribution_window("affiliate_1")
     end
 
-    test "returns a default attribution of 24 hours if media_source with given aff_name does not exist" do
-      assert 86400 = Affiliates.get_attribution_window("non_existent_affiliate")
+    test "returns a default attribution of 30 days if media_source with given aff_name does not exist" do
+      assert 2592000 = Affiliates.get_attribution_window("non_existent_affiliate")
     end
 
-    test "returns a default attribution window of 24 hours if media_source doesn't have attribution_window_in_seconds" do
+    test "returns a default attribution window of 30 days hours if media_source doesn't have attribution_window_in_seconds" do
       _media_source = Affiliates.create_media_source(@valid_ms_attrs_without_attribution_window)
-      assert 86400 = Affiliates.get_attribution_window("affiliate_no_attribution")
+      assert 2592000 = Affiliates.get_attribution_window("affiliate_no_attribution")
     end
   end
 end

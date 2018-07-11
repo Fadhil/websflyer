@@ -131,11 +131,11 @@ defmodule WebsFlyer.Affiliates do
   or returns the default 86400 seconds (24 hours) if it doesn't
   """
   def get_attribution_window(source_name) do
-    one_day_in_seconds = 24 * 60 * 60
+    one_month_in_seconds = 30 * 24 * 60 * 60
     case get_media_source_by_name(source_name) do
-      nil -> one_day_in_seconds
+      nil -> one_month_in_seconds
       media_source ->
-        media_source.attribution_window_in_seconds || one_day_in_seconds
+        media_source.attribution_window_in_seconds || one_month_in_seconds
     end
   end
 end

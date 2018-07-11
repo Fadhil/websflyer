@@ -25,7 +25,7 @@ defmodule WebsFlyerWeb.API.MediaSourceControllerTest do
   end
 
   describe "create media_source" do
-    test "renders media_source when data is valid", %{conn: conn} do
+    test "renders media_source when data valid (at least has aff_name)", %{conn: conn} do
       conn = post conn, api_media_source_path(conn, :create), media_source: @create_attrs
       assert %{"id" => id} = json_response(conn, 201)["data"]
 
@@ -38,7 +38,7 @@ defmodule WebsFlyerWeb.API.MediaSourceControllerTest do
         "name" => "some name"}
     end
 
-    test "renders errors when data is invalid", %{conn: conn} do
+    test "renders errors when data is invalid (does not have aff_name)", %{conn: conn} do
       conn = post conn, api_media_source_path(conn, :create), media_source: @invalid_attrs
       assert json_response(conn, 422)["errors"] != %{}
     end
