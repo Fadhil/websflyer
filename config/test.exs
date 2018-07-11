@@ -4,6 +4,7 @@ use Mix.Config
 # you can enable the server option below.
 config :webs_flyer, WebsFlyerWeb.Endpoint,
   http: [port: 4001],
+  debug_errors: true,
   server: false
 
 # Print only warnings and errors during test

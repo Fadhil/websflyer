@@ -1,6 +1,8 @@
 defmodule WebsFlyer.Affiliates do
   @moduledoc """
-  The Affiliates context.
+  # Affiliates
+
+  The main context for the WebsFlyer service
   """
 
   import Ecto.Query, warn: false
@@ -13,8 +15,8 @@ defmodule WebsFlyer.Affiliates do
 
   ## Examples
 
-      iex> list_attributions()
-      [%Attribution{}, ...]
+      # iex> list_attributions()
+      # [%Attribution{}, ...]
 
   """
   def list_attributions do
@@ -28,28 +30,29 @@ defmodule WebsFlyer.Affiliates do
 
   ## Examples
 
-      iex> get_attribution!(123)
-      %Attribution{}
-
-      iex> get_attribution!(456)
-      ** (Ecto.NoResultsError)
+      # iex> get_attribution!(123)
+      # %Attribution{}
+      #
+      # iex> get_attribution!(456)
+      # ** (Ecto.NoResultsError)
 
   """
   def get_attribution!(id), do: Repo.get!(Attribution, id)
 
-  @doc """
-  Creates a attribution.
+  @doc ~S"""
+  Creates an attribution.
 
-  ## Examples
-
-      iex> create_attribution(%{field: value})
-      {:ok, %Attribution{}}
-
-      iex> create_attribution(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
+  Required params: `user_cookie`
 
   """
-  def create_attribution(attrs \\ %{}) do
+  def create_attribution(attrs \\ %{})
+  def create_attribution(%{"event" => "click"} = attrs) do
+    %Attribution{}
+    |> Attribution.click_changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def create_attribution(attrs) do
     %Attribution{}
     |> Attribution.changeset(attrs)
     |> Repo.insert()
@@ -60,11 +63,11 @@ defmodule WebsFlyer.Affiliates do
 
   ## Examples
 
-      iex> update_attribution(attribution, %{field: new_value})
-      {:ok, %Attribution{}}
-
-      iex> update_attribution(attribution, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
+      # iex> update_attribution(attribution, %{field: new_value})
+      # {:ok, %Attribution{}}
+      #
+      # iex> update_attribution(attribution, %{field: bad_value})
+      # {:error, %Ecto.Changeset{}}
 
   """
   def update_attribution(%Attribution{} = attribution, attrs) do
@@ -78,11 +81,11 @@ defmodule WebsFlyer.Affiliates do
 
   ## Examples
 
-      iex> delete_attribution(attribution)
-      {:ok, %Attribution{}}
-
-      iex> delete_attribution(attribution)
-      {:error, %Ecto.Changeset{}}
+      # iex> delete_attribution(attribution)
+      # {:ok, %Attribution{}}
+      #
+      # iex> delete_attribution(attribution)
+      # {:error, %Ecto.Changeset{}}
 
   """
   def delete_attribution(%Attribution{} = attribution) do
@@ -94,8 +97,8 @@ defmodule WebsFlyer.Affiliates do
 
   ## Examples
 
-      iex> change_attribution(attribution)
-      %Ecto.Changeset{source: %Attribution{}}
+      # iex> change_attribution(attribution)
+      # %Ecto.Changeset{source: %Attribution{}}
 
   """
   def change_attribution(%Attribution{} = attribution) do
