@@ -9,5 +9,6 @@ defmodule WebsFlyerWeb.Router do
     pipe_through(:api)
 
     resources("/attributions", AttributionController, as: :api_attribution, except: [:update, :delete])
+    resources "/media_sources", MediaSourceController, as: :api_media_source
   end
 end
