@@ -1,4 +1,6 @@
-defmodule WebsFlyer.Affiliates do
+defmodule WebsFlyer.Affiliates do 
+  alias WebsFlyer.Repo
+  import Ecto.Query, only: [from: 2]
   @moduledoc """
   # Affiliates
 
@@ -24,6 +26,18 @@ defmodule WebsFlyer.Affiliates do
   """
   def get_attribution!(id), do: Repo.get!(Attribution, id)
 
+
+  @doc """
+  Gets a single attribution by the user_cookie
+  """
+  def get_attribution(user_cookie) do
+    (from a in WebsFlyer.Affiliates.Attribution, 
+    where: a.user_cookie == ^user_cookie,
+    order_by: [desc: :inserted_at],
+    limit: 1) 
+    |> Repo.all 
+    |> List.first
+  end
   @doc ~S"""
   Creates an attribution.
 

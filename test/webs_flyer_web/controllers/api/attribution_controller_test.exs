@@ -58,6 +58,7 @@ defmodule WebsFlyerWeb.API.AttributionControllerTest do
     "event" => "transaction",
     "user_id" => 3
   }
+  
   @create_attrs %{
     "aff_name" => "some aff_name",
     "event" => "click",

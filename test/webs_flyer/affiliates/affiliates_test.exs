@@ -34,11 +34,16 @@ defmodule WebsFlyer.AffiliatesTest do
       assert Affiliates.get_attribution!(attribution.id) == attribution
     end
 
+    test "get_attribution/1 with a user_cookie returns the last attribution with that cookie" do
+      attribution = attribution_fixture()
+      assert Affiliates.get_attribution("randomusercookie") == attribution
+    end
+
     test "create_attribution/1 with valid click attribution data creates a click attribution" do
       assert {:ok, attribution = %Attribution{event: "click"}} = Affiliates.create_attribution(@valid_click_attrs)
-      assert attribution.url_params == "?utm_source=affiliate_name&utm_medium=Affiliate"
-      assert attribution.user_cookie == "randomusercookie"
-      assert attribution.aff_name == "affiliate_name"
+      assert attribution.url_params() == "?utm_source=affiliate_name&utm_medium=Affiliate"
+      assert attribution.user_cookie() == "randomusercookie"
+      assert attribution.aff_name() == "affiliate_name"
     end
 
     test "create_attribution/1 with invalid data returns error changeset" do
