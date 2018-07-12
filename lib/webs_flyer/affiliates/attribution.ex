@@ -6,6 +6,7 @@ defmodule WebsFlyer.Affiliates.Attribution do
   schema "attributions" do
     field :aff_name, :string
     field :event, :string
+    field :attributed_to, :string
     field :rs_id, :integer
     field :s2s_post_params, :string
     field :status, :string
