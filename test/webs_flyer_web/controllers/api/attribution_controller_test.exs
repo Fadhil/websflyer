@@ -28,7 +28,35 @@ defmodule WebsFlyerWeb.API.AttributionControllerTest do
   }
 
   @valid_login_attrs %{
-    
+    "event" => "login",
+    "user_id" => 3,
+    "user_cookie" => "randomusercookie"
+  }
+
+  @invalid_login_without_user_id_attrs %{
+    "event" => "login",
+    "user_cookie" => "randomusercookie"
+  }
+
+  @invalid_login_without_user_cookie_attrs %{
+    "event" => "login",
+    "user_id" => 3
+  }
+
+  @valid_transaction_attrs %{
+    "event" => "transaction",
+    "user_id" => 3,
+    "rs_id" => 1234
+  }
+
+  @invalid_transaction_without_user_id_attrs %{
+    "event" => "transaction",
+    "rs_id" => 1234
+  }
+
+  @invalid_transaction_without_rs_id_attrs %{
+    "event" => "transaction",
+    "user_id" => 3
   }
   @create_attrs %{
     "aff_name" => "some aff_name",
@@ -80,8 +108,8 @@ defmodule WebsFlyerWeb.API.AttributionControllerTest do
     end
   end
 
-  describe "create click attribution with url_params and user_cookie and user_id is nil" do
-    test "renders click attribution with valid details",
+  describe "create click attribution" do
+    test "with url_params and user_cookie and user_id is nil renders click attribution with valid details",
          %{conn: conn} do
       conn = post(conn, api_attribution_path(conn, :create), attribution: @anonymous_click_attrs)
       assert %{
@@ -98,21 +126,53 @@ defmodule WebsFlyerWeb.API.AttributionControllerTest do
       conn = post(conn, api_attribution_path(conn, :create), attribution: @invalid_attrs)
       assert json_response(conn, 422)["errors"] != %{}
     end
-  end
 
-  describe "create click attribution with url_params but user_cookie is nil" do
-    test "renders a 422 error", %{conn: conn} do
+    test "with url_params but user_cookie is nil renders a 422 error", %{conn: conn} do
       conn = post(conn, api_attribution_path(conn, :create), attribution: @invalid_click_attrs)
       assert json_response(conn, 422)["errors"] != %{}
     end
-  end
 
-  describe "create click attribution with user_cookie but url_params and user_id is nil" do
-    test "renders a 422 error", %{conn: conn} do
+    test "with user_cookie but url_params and user_id is nil renders a 422 error", %{conn: conn} do
       conn = post(conn, api_attribution_path(conn, :create), attribution: @invalid_click_attrs2)
       assert json_response(conn, 422)["errors"] != %{}
     end
   end
+
+  describe "create login attribution" do
+    test "with valid details renders login attribution", %{conn: conn} do
+      post(conn, api_attribution_path(conn, :create), attribution: @valid_login_attrs)
+      assert %{"event" => "login", "user_cookie" => "randomusercookie", "user_id" => 3}
+    end
+
+    test "with url_params but user_cookie is nil renders a 422 error", %{conn: conn} do
+      conn = post(conn, api_attribution_path(conn, :create), attribution: @invalid_login_without_user_cookie_attrs)
+      assert json_response(conn, 422)["errors"] != %{}
+    end
+
+    test "with user_cookie but url_params and user_id is nil renders a 422 error", %{conn: conn} do
+      conn = post(conn, api_attribution_path(conn, :create), attribution: @invalid_login_without_user_id_attrs)
+      assert json_response(conn, 422)["errors"] != %{}
+    end
+  end
+
+
+  describe "create transaction attribution" do
+    test "with valid details renders transaction attribution", %{conn: conn} do
+      post(conn, api_attribution_path(conn, :create), attribution: @valid_transaction_attrs)
+      assert %{"event" => "transaction", "user_cookie" => "randomusercookie", "user_id" => 3}
+    end
+
+    test "with user_id but rs_id is nil renders a 422 error", %{conn: conn} do
+      conn = post(conn, api_attribution_path(conn, :create), attribution: @invalid_transaction_without_rs_id_attrs)
+      assert json_response(conn, 422)["errors"] != %{}
+    end
+
+    test "with rs_id and user_id is nil renders a 422 error", %{conn: conn} do
+      conn = post(conn, api_attribution_path(conn, :create), attribution: @invalid_transaction_without_user_id_attrs)
+      assert json_response(conn, 422)["errors"] != %{}
+    end
+  end
+
 
   describe "update attribution" do
     setup [:create_attribution]

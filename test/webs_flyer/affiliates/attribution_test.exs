@@ -16,6 +16,11 @@ defmodule WebsFlyer.Affiliates.AttributionTest do
     assert changeset.valid?
   end
 
+  test "changeset with invalid click attributions is not valid" do
+    changeset = Attribution.changeset(%Attribution{}, @invalid_click_attributes)
+    refute changeset.valid?
+  end
+
   test "changeset without event is not valid" do
     changeset = Attribution.changeset(%Attribution{}, @invalid_event_attributes)
     refute changeset.valid?
