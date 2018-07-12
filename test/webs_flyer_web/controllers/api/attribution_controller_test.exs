@@ -29,7 +29,7 @@ defmodule WebsFlyerWeb.API.AttributionControllerTest do
 
   @create_attrs %{
     aff_name: "some aff_name",
-    event: "some event",
+    event: "click",
     rs_id: 42,
     s2s_post_params: "some s2s_post_params",
     status: "some status",
@@ -40,7 +40,7 @@ defmodule WebsFlyerWeb.API.AttributionControllerTest do
   }
   @update_attrs %{
     aff_name: "some updated aff_name",
-    event: "some updated event",
+    event: "click",
     rs_id: 43,
     s2s_post_params: "some updated s2s_post_params",
     status: "some updated status",
