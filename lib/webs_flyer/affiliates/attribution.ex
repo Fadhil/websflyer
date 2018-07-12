@@ -18,8 +18,9 @@ defmodule WebsFlyer.Affiliates.Attribution do
   end
 
   @required_attrs [:event]
-  @click_required_attrs [:event, :url_params, :user_cookie]
-  @login_required_attrs [:event, :user_id, :user_cookie]
+  @click_required_attrs [:url_params, :user_cookie]
+  @login_required_attrs [:user_id, :user_cookie]
+  @transaction_required_attrs [:user_id, :rs_id]
   @valid_events ~w(click login transaction)
 
   defguard is_valid?(string) when not is_nil(string) and byte_size(string) > 0
@@ -39,6 +40,11 @@ defmodule WebsFlyer.Affiliates.Attribution do
   def changeset(attribution, %{"event" => "login"} = attrs) do
     basic_changeset(attribution, attrs)
     |> validate_required(@login_required_attrs)
+  end
+
+  def changeset(attribution, %{"event" => "transaction"} = attrs) do
+    basic_changeset(attribution, attrs)
+    |> validate_required(@transaction_required_attrs)
   end
 
   def changeset(attribution, attrs) do

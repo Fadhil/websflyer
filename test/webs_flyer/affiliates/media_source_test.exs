@@ -3,7 +3,7 @@ defmodule WebsFlyer.Affiliates.MediaSourceTest do
 
   alias WebsFlyer.Affiliates.MediaSource
 
-  @valid_media_source_attrs %{aff_name: "some_aff_name"}
+  @valid_media_source_attrs %{"aff_name" => "some_aff_name"}
   @invalid_media_source_attrs %{}
 
   test "media_source with valid click attributions (has aff_name)" do

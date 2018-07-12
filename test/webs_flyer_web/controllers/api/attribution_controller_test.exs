@@ -9,56 +9,59 @@ defmodule WebsFlyerWeb.API.AttributionControllerTest do
   params before having logged in
   """
   @anonymous_click_attrs %{
-    url_params: "?utm_source=some_affiliate",
-    user_id: nil,
-    user_cookie: "randomcookie",
-    event: "click"
+    "url_params" => "?utm_source=some_affiliate",
+    "user_id" => nil,
+    "user_cookie" => "randomcookie",
+    "event" => "click"
   }
 
   @invalid_click_attrs %{
-    url_params: "?utm_source=some_affiliate",
-    user_cookie: nil,
-    event: "click"
+    "url_params" => "?utm_source=some_affiliate",
+    "user_cookie" => nil,
+    "event" => "click"
   }
 
   @invalid_click_attrs2 %{
-    url_params: nil,
-    user_cookie: "somerandomusercookie",
-    event: "click"
+    "url_params" => nil,
+    "user_cookie" => "somerandomusercookie",
+    "event" => "click"
   }
 
+  @valid_login_attrs %{
+    
+  }
   @create_attrs %{
-    aff_name: "some aff_name",
-    event: "click",
-    rs_id: 42,
-    s2s_post_params: "some s2s_post_params",
-    status: "some status",
-    transaction_id: "some transaction_id",
-    url_params: "param1=test1&param2=test2",
-    user_cookie: "some user_cookie",
-    user_id: 42
+    "aff_name" => "some aff_name",
+    "event" => "click",
+    "rs_id" => 42,
+    "s2s_post_params" => "some s2s_post_params",
+    "status" => "some status",
+    "transaction_id" => "some transaction_id",
+    "url_params" => "param1=test1&param2=test2",
+    "user_cookie" => "randomusercookie",
+    "user_id" => 42
   }
   @update_attrs %{
-    aff_name: "some updated aff_name",
-    event: "click",
-    rs_id: 43,
-    s2s_post_params: "some updated s2s_post_params",
-    status: "some updated status",
-    transaction_id: "some updated transaction_id",
-    url_params: "some updated url_params",
-    user_cookie: "some updated user_cookie",
-    user_id: 43
+    "aff_name" => "some updated aff_name",
+    "event" => "click",
+    "rs_id" => 43,
+    "s2s_post_params" => "some updated s2s_post_params",
+    "status" => "some updated status",
+    "transaction_id" => "some updated transaction_id",
+    "url_params" => "some updated url_params",
+    "user_cookie" => "randomusercookie",
+    "user_id" => 43
   }
   @invalid_attrs %{
-    aff_name: nil,
-    event: nil,
-    rs_id: nil,
-    s2s_post_params: nil,
-    status: nil,
-    transaction_id: nil,
-    url_params: nil,
-    user_cookie: nil,
-    user_id: nil
+    "aff_name" => nil,
+    "event" => nil,
+    "rs_id" => nil,
+    "s2s_post_params" => nil,
+    "status" => nil,
+    "transaction_id" => nil,
+    "url_params" => nil,
+    "user_cookie" => nil,
+    "user_id" => nil
   }
 
   def fixture(:attribution) do
