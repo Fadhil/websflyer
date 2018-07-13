@@ -1,8 +1,7 @@
 defmodule WebsFlyerWeb.API.AttributionControllerTest do
   use WebsFlyerWeb.ConnCase
 
-  alias WebsFlyer.Affiliates
-  alias WebsFlyer.Affiliates.Attribution
+  alias WebsFlyer.Affiliates.{Attribution, Attributions}
 
   @doc """
   @anonymous_click_attrs are for when users hit the site with ?utm_source source
@@ -94,7 +93,7 @@ defmodule WebsFlyerWeb.API.AttributionControllerTest do
   }
 
   def fixture(:attribution) do
-    {:ok, attribution} = Affiliates.create_attribution(@create_attrs)
+    {:ok, attribution} = Attributions.create_attribution(@create_attrs)
     attribution
   end
 
