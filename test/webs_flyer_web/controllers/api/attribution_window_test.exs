@@ -2,27 +2,28 @@ defmodule WebsFlyerWeb.AttributionWindowTest do
   use WebsFlyerWeb.ConnCase
 
   alias WebsFlyer.Affiliates
-  # alias WebsFlyer.Repo
+  alias Affiliates.{Attributions, MediaSources, UserAttributions}
+  alias WebsFlyer.Repo
 
-  # import Ecto.Query, only: [update: 2, from: 2]
+  import Ecto.Query, only: [update: 2, from: 2]
 
-  # @shopback_media_source %{
-  #   "aff_name" => "shopback",
-  #   "name" => "Shopback People",
-  #   "attribution_window_in_seconds" => 24 * 60 * 60
-  # }
+  @shopback_media_source %{
+    "aff_name" => "shopback",
+    "name" => "Shopback People",
+    "attribution_window_in_seconds" => 24 * 60 * 60
+  }
 
-  # @click_shopback_attrs %{
-  #   "event" => "click",
-  #   "url_params" => "?utm_source=shopback&utm_medium=Affiliate",
-  #   "user_cookie" => "randomshopbackusercookie"
-  # }
+  @click_shopback_attrs %{
+    "event" => "click",
+    "url_params" => "?utm_source=shopback&utm_medium=Affiliate",
+    "user_cookie" => "randomshopbackusercookie"
+  }
 
-  # @login_attrs %{
-  #   "event" => "login",
-  #   "user_id" => 3,
-  #   "user_cookie" => "randomshopbackusercookie"
-  # }
+  @login_attrs %{
+    "event" => "login",
+    "user_id" => 3,
+    "user_cookie" => "randomshopbackusercookie"
+  }
 
   def fixture(attributes) do
     {:ok, attribution} = Affiliates.create_attribution(attributes)
@@ -34,8 +35,13 @@ defmodule WebsFlyerWeb.AttributionWindowTest do
   end
 
 
-  describe "login event occurs" do
-    test ""
+  describe "click event occurs" do
+    test "a user_attribution is created with the user_cookie and affiliate name, attribution window and timestamp" do
+      {:ok, media_source} = Affiliates.MediaSources.create_media_source(@shopback_media_source)
+      {:ok, click_attribution} = Affiliates.Attributions.create_attribution(@click_shopback_attrs)
+      # assert Affiliates.UserAttributions.get
+
+    end
     # test "within a clicks attribution window creates a login entry attributed to that affiliate", %{conn: conn} do
     #   {:ok, media_source} = Affiliates.create_media_source(@shopback_media_source)
     #   {:ok, click_attribution} = Affiliates.create_attribution(@click_shopback_attrs)

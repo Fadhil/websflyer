@@ -2,6 +2,7 @@ defmodule WebsFlyerWeb.API.MediaSourceControllerTest do
   use WebsFlyerWeb.ConnCase
 
   alias WebsFlyer.Affiliates
+  alias Affiliates.MediaSources
   alias WebsFlyer.Affiliates.Schemas.MediaSource
 
   @create_attrs %{aff_name: "some aff_name", attribution_window_in_seconds: 42, do_postback: true, name: "some name"}
@@ -9,7 +10,7 @@ defmodule WebsFlyerWeb.API.MediaSourceControllerTest do
   @invalid_attrs %{aff_name: nil, attribution_window_in_seconds: nil, do_postback: nil, name: nil}
 
   def fixture(:media_source) do
-    {:ok, media_source} = Affiliates.create_media_source(@create_attrs)
+    {:ok, media_source} = MediaSources.create_media_source(@create_attrs)
     media_source
   end
 
