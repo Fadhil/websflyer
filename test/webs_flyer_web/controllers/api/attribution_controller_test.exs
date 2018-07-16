@@ -1,8 +1,8 @@
 defmodule WebsFlyerWeb.API.AttributionControllerTest do
   use WebsFlyerWeb.ConnCase
 
-  alias WebsFlyer.Affiliates.{Attribution, Attributions}
-
+  alias WebsFlyer.Affiliates.Schemas.{Attribution}
+  alias WebsFlyer.Affiliates.Attributions
   @doc """
   @anonymous_click_attrs are for when users hit the site with ?utm_source source
   params before having logged in

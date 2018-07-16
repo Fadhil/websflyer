@@ -1,7 +1,8 @@
 defmodule WebsFlyerWeb.API.AttributionController do
   use WebsFlyerWeb, :controller
 
-  alias WebsFlyer.Affiliates.{Attribution, Attributions}
+  alias WebsFlyer.Affiliates.{Attributions}
+  alias WebsFlyer.Affiliates.Schemas.Attribution
 
   action_fallback WebsFlyerWeb.FallbackController
 

@@ -2,7 +2,7 @@ defmodule WebsFlyerWeb.API.MediaSourceController do
   use WebsFlyerWeb, :controller
 
   alias WebsFlyer.Affiliates
-  alias WebsFlyer.Affiliates.MediaSource
+  alias WebsFlyer.Affiliates.Schemas.MediaSource
 
   action_fallback WebsFlyerWeb.FallbackController
 

@@ -2,7 +2,7 @@ defmodule WebsFlyerWeb.API.MediaSourceControllerTest do
   use WebsFlyerWeb.ConnCase
 
   alias WebsFlyer.Affiliates
-  alias WebsFlyer.Affiliates.MediaSource
+  alias WebsFlyer.Affiliates.Schemas.MediaSource
 
   @create_attrs %{aff_name: "some aff_name", attribution_window_in_seconds: 42, do_postback: true, name: "some name"}
   @update_attrs %{aff_name: "some updated aff_name", attribution_window_in_seconds: 43, do_postback: false, name: "some updated name"}

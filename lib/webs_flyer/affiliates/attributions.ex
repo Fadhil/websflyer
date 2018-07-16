@@ -10,7 +10,7 @@ defmodule WebsFlyer.Affiliates.Attributions do
   import Ecto.Query, warn: false
   alias WebsFlyer.Repo
 
-  alias WebsFlyer.Affiliates.Attribution
+  alias WebsFlyer.Affiliates.Schemas.Attribution
   
   @doc """
   Returns the list of attributions.
@@ -31,7 +31,7 @@ defmodule WebsFlyer.Affiliates.Attributions do
   Gets a single attribution by the user_cookie
   """
   def get_attribution(user_cookie) do
-    (from a in WebsFlyer.Affiliates.Attribution, 
+    (from a in WebsFlyer.Affiliates.Schemas.Attribution, 
     where: a.user_cookie == ^user_cookie,
     order_by: [desc: :inserted_at],
     limit: 1) 
@@ -72,7 +72,4 @@ defmodule WebsFlyer.Affiliates.Attributions do
   def change_attribution(%Attribution{} = attribution) do
     Attribution.changeset(attribution, %{})
   end
-
-  alias WebsFlyer.Affiliates.MediaSource
-
 end

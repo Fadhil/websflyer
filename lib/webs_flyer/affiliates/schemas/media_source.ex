@@ -1,4 +1,4 @@
-defmodule WebsFlyer.Affiliates.MediaSource do
+defmodule WebsFlyer.Affiliates.Schemas.MediaSource do
   use Ecto.Schema
   import Ecto.Changeset
 

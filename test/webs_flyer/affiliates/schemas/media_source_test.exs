@@ -1,7 +1,7 @@
-defmodule WebsFlyer.Affiliates.MediaSourceTest do
+defmodule WebsFlyer.Affiliates.Schemas.MediaSourceTest do
   use WebsFlyer.DataCase
 
-  alias WebsFlyer.Affiliates.MediaSource
+  alias WebsFlyer.Affiliates.Schemas.MediaSource
 
   @valid_media_source_attrs %{"aff_name" => "some_aff_name"}
   @invalid_media_source_attrs %{}
@@ -11,7 +11,7 @@ defmodule WebsFlyer.Affiliates.MediaSourceTest do
     assert changset.valid?
   end
 
-  test "media_source with invvalid click attributions (does not have aff_name)" do
+  test "media_source with invalid click attributions (does not have aff_name)" do
     changset = MediaSource.changeset(%MediaSource{}, @invalid_media_source_attrs)
     refute changset.valid?
   end

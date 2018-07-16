@@ -1,7 +1,7 @@
-defmodule WebsFlyer.Affiliates.AttributionTest do
+defmodule WebsFlyer.Affiliates.Schemas.AttributionTest do
   use WebsFlyer.DataCase
 
-  alias WebsFlyer.Affiliates.Attribution
+  alias WebsFlyer.Affiliates.Schemas.Attribution
 
   @valid_click_attributes %{"event" => "click", "url_params" => "?utm_source=affiliate_name", "user_cookie" => "randomusercookie"}
   @invalid_click_attributes %{"event" => "click"}

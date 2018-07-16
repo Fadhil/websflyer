@@ -1,8 +1,8 @@
-defmodule WebsFlyer.Affiliates.AttributionsTest do
+defmodule WebsFlyer.Affiliates.Schemas.AttributionsTest do
   use WebsFlyer.DataCase
 
-  alias WebsFlyer.Affiliates.{Attribution, Attributions}
-
+  alias WebsFlyer.Affiliates.Schemas.{Attribution}
+  alias WebsFlyer.Affiliates.Attributions
   describe "attributions" do
 
     @valid_attrs %{aff_name: "affiliate_name", event: "click", rs_id: 3600, s2s_post_params: "some s2s_post_params", status: "some status", transaction_id: "some transaction_id", url_params: "?utm_source=affiliate_name&utm_medium=Affiliate", user_cookie: "randomusercookie", user_id: 3600}

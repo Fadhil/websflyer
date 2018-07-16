@@ -4,10 +4,9 @@ defmodule WebsFlyer.AffiliatesTest do
   alias WebsFlyer.Affiliates
 
   doctest WebsFlyer.Affiliates
-
+  alias WebsFlyer.Affiliates.Schemas.MediaSource
   
   describe "media_sources" do
-    alias WebsFlyer.Affiliates.MediaSource
 
     @valid_ms_attrs %{aff_name: "affiliate_1", attribution_window_in_seconds: 3600, do_postback: true, name: "some name"}
     @valid_ms_attrs_dup_aff_name %{aff_name: "affiliate_1", attribution_window_in_seconds: 18400, do_postback: true, name: "some other name"}
@@ -90,7 +89,6 @@ defmodule WebsFlyer.AffiliatesTest do
   end
 
   describe "get_attribution_window/1" do
-    alias WebsFlyer.Affiliates.MediaSource
 
     test "returns a media_source.attribution_window_in_seconds if media_source with given aff_name exists" do
       _media_source1 = media_source_fixture()
