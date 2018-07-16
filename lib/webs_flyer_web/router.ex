@@ -10,5 +10,6 @@ defmodule WebsFlyerWeb.Router do
 
     resources("/attributions", AttributionController, as: :api_attribution, except: [:update, :delete])
     resources "/media_sources", MediaSourceController, as: :api_media_source
+    resources "/user_attributions", UserAttributionController, as: :api_user_attribution
   end
 end
