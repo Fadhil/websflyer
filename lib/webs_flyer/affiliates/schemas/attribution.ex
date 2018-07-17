@@ -6,16 +6,16 @@ defmodule WebsFlyer.Affiliates.Schemas.Attribution do
   alias WebsFlyer.Repo
 
   schema "attributions" do
-    field :aff_name, :string
-    field :event, :string
-    field :attributed_to, :string
-    field :rs_id, :integer
-    field :s2s_post_params, :string
-    field :status, :string
-    field :transaction_id, :string
-    field :url_params, :string
-    field :user_cookie, :string
-    field :user_id, :integer
+    field(:aff_name, :string)
+    field(:event, :string)
+    field(:attributed_to, :string)
+    field(:rs_id, :integer)
+    field(:s2s_post_params, :string)
+    field(:status, :string)
+    field(:transaction_id, :string)
+    field(:url_params, :string)
+    field(:user_cookie, :string)
+    field(:user_id, :integer)
 
     timestamps()
   end
@@ -30,7 +30,17 @@ defmodule WebsFlyer.Affiliates.Schemas.Attribution do
 
   def basic_changeset(attribution, attrs) do
     attribution
-    |> cast(attrs, [:url_params, :aff_name, :event, :user_cookie, :user_id, :rs_id, :status, :transaction_id, :s2s_post_params])
+    |> cast(attrs, [
+      :url_params,
+      :aff_name,
+      :event,
+      :user_cookie,
+      :user_id,
+      :rs_id,
+      :status,
+      :transaction_id,
+      :s2s_post_params
+    ])
     |> validate_required(@required_attrs)
   end
 
@@ -51,15 +61,18 @@ defmodule WebsFlyer.Affiliates.Schemas.Attribution do
   end
 
   def changeset(attribution, attrs) do
-    basic_changeset(attribution, attrs) 
+    basic_changeset(attribution, attrs)
     |> validate_event_type()
   end
 
   defp validate_event_type(changeset) do
     case changeset.valid? do
-      false -> changeset
-      true -> 
+      false ->
+        changeset
+
+      true ->
         event = get_field(changeset, :event)
+
         case Enum.member?(@valid_events, event) do
           true -> changeset
           false -> add_error(changeset, :event, "Unrecognized event")
@@ -67,7 +80,9 @@ defmodule WebsFlyer.Affiliates.Schemas.Attribution do
     end
   end
 
-  defp put_click_attribution_details(%Ecto.Changeset{valid?: true, changes: %{url_params: url_params}} = changeset) do
+  defp put_click_attribution_details(
+         %Ecto.Changeset{valid?: true, changes: %{url_params: url_params}} = changeset
+       ) do
     changeset
     |> put_change(:aff_name, get_affiliate_name(url_params))
   end
@@ -77,7 +92,7 @@ defmodule WebsFlyer.Affiliates.Schemas.Attribution do
   end
 
   def get_affiliate_name(params_string) do
-    params = 
+    params =
       params_string
       |> String.trim_leading("?")
       |> URI.decode_query()
@@ -85,6 +100,7 @@ defmodule WebsFlyer.Affiliates.Schemas.Attribution do
     case params do
       %{"utm_source" => affiliate_name} ->
         affiliate_name
+
       _ ->
         "unknown"
     end

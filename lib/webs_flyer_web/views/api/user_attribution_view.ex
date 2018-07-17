@@ -11,11 +11,13 @@ defmodule WebsFlyerWeb.API.UserAttributionView do
   end
 
   def render("user_attribution.json", %{user_attribution: user_attribution}) do
-    %{id: user_attribution.id,
+    %{
+      id: user_attribution.id,
       user_cookie: user_attribution.user_cookie,
       user_id: user_attribution.user_id,
       attributed_to: user_attribution.attributed_to,
       attribution_start_timestamp: user_attribution.attribution_start_timestamp,
-      attribution_window_in_seconds: user_attribution.attribution_window_in_seconds}
+      attribution_window_in_seconds: user_attribution.attribution_window_in_seconds
+    }
   end
 end

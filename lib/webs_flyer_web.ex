@@ -28,8 +28,9 @@ defmodule WebsFlyerWeb do
 
   def view do
     quote do
-      use Phoenix.View, root: "lib/webs_flyer_web/templates",
-                        namespace: WebsFlyerWeb
+      use Phoenix.View,
+        root: "lib/webs_flyer_web/templates",
+        namespace: WebsFlyerWeb
 
       # Import convenience functions from controllers
       import Phoenix.Controller, only: [get_flash: 2, view_module: 1]

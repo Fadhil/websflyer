@@ -11,7 +11,7 @@ defmodule WebsFlyer.Application do
       # Start the Ecto repository
       supervisor(WebsFlyer.Repo, []),
       # Start the endpoint when the application starts
-      supervisor(WebsFlyerWeb.Endpoint, []),
+      supervisor(WebsFlyerWeb.Endpoint, [])
       # Start your own worker by calling: WebsFlyer.Worker.start_link(arg1, arg2, arg3)
       # worker(WebsFlyer.Worker, [arg1, arg2, arg3]),
     ]

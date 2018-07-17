@@ -11,7 +11,8 @@ defmodule WebsFlyerWeb.API.AttributionView do
   end
 
   def render("attribution.json", %{attribution: attribution}) do
-    %{id: attribution.id,
+    %{
+      id: attribution.id,
       url_params: attribution.url_params,
       aff_name: attribution.aff_name,
       event: attribution.event,

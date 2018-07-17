@@ -1,99 +1,12 @@
 defmodule WebsFlyerWeb.API.AttributionControllerTest do
   use WebsFlyerWeb.ConnCase
 
-  alias WebsFlyer.Affiliates.Schemas.{Attribution}
-  alias WebsFlyer.Affiliates.Attributions
-  @doc """
-  @anonymous_click_attrs are for when users hit the site with ?utm_source source
-  params before having logged in
-  """
-  @anonymous_click_attrs %{
-    "url_params" => "?utm_source=some_affiliate",
-    "user_id" => nil,
-    "user_cookie" => "randomcookie",
-    "event" => "click"
-  }
-
-  @invalid_click_attrs %{
-    "url_params" => "?utm_source=some_affiliate",
-    "user_cookie" => nil,
-    "event" => "click"
-  }
-
-  @invalid_click_attrs2 %{
-    "url_params" => nil,
-    "user_cookie" => "somerandomusercookie",
-    "event" => "click"
-  }
-
-  @valid_login_attrs %{
-    "event" => "login",
-    "user_id" => 3,
-    "user_cookie" => "randomusercookie"
-  }
-
-  @invalid_login_without_user_id_attrs %{
-    "event" => "login",
-    "user_cookie" => "randomusercookie"
-  }
-
-  @invalid_login_without_user_cookie_attrs %{
-    "event" => "login",
-    "user_id" => 3
-  }
-
-  @valid_transaction_attrs %{
-    "event" => "transaction",
-    "user_id" => 3,
-    "rs_id" => 1234
-  }
-
-  @invalid_transaction_without_user_id_attrs %{
-    "event" => "transaction",
-    "rs_id" => 1234
-  }
-
-  @invalid_transaction_without_rs_id_attrs %{
-    "event" => "transaction",
-    "user_id" => 3
-  }
-  
-  @create_attrs %{
-    "aff_name" => "some aff_name",
-    "event" => "click",
-    "rs_id" => 42,
-    "s2s_post_params" => "some s2s_post_params",
-    "status" => "some status",
-    "transaction_id" => "some transaction_id",
-    "url_params" => "param1=test1&param2=test2",
-    "user_cookie" => "randomusercookie",
-    "user_id" => 42
-  }
-  @update_attrs %{
-    "aff_name" => "some updated aff_name",
-    "event" => "click",
-    "rs_id" => 43,
-    "s2s_post_params" => "some updated s2s_post_params",
-    "status" => "some updated status",
-    "transaction_id" => "some updated transaction_id",
-    "url_params" => "some updated url_params",
-    "user_cookie" => "randomusercookie",
-    "user_id" => 43
-  }
-  @invalid_attrs %{
-    "aff_name" => nil,
-    "event" => nil,
-    "rs_id" => nil,
-    "s2s_post_params" => nil,
-    "status" => nil,
-    "transaction_id" => nil,
-    "url_params" => nil,
-    "user_cookie" => nil,
-    "user_id" => nil
-  }
+  alias WebsFlyer.Affiliates.Schemas.{Attribution, UserAttribution, MediaSource}
+  alias WebsFlyer.Affiliates.Attributions  
+  alias WebsFlyer.TestData
 
   def fixture(:attribution) do
-    {:ok, attribution} = Attributions.create_attribution(@create_attrs)
+    {:ok, [attribution, user_attribution]} = Attributions.create_attribution(TestData.create_attrs)
     attribution
   end
 
@@ -111,7 +24,7 @@ defmodule WebsFlyerWeb.API.AttributionControllerTest do
   describe "create click attribution" do
     test "with url_params and user_cookie and user_id is nil renders click attribution with valid details",
          %{conn: conn} do
-      conn = post(conn, api_attribution_path(conn, :create), attribution: @anonymous_click_attrs)
+      conn = post(conn, api_attribution_path(conn, :create), attribution: TestData.anonymous_click_attrs)
       assert %{
                "id" => _id,
                "url_params" => "?utm_source=some_affiliate",
@@ -123,34 +36,35 @@ defmodule WebsFlyerWeb.API.AttributionControllerTest do
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
-      conn = post(conn, api_attribution_path(conn, :create), attribution: @invalid_attrs)
+      conn = post(conn, api_attribution_path(conn, :create), attribution: TestData.invalid_attrs)
       assert json_response(conn, 422)["errors"] != %{}
     end
 
     test "with url_params but user_cookie is nil renders a 422 error", %{conn: conn} do
-      conn = post(conn, api_attribution_path(conn, :create), attribution: @invalid_click_attrs)
+      conn = post(conn, api_attribution_path(conn, :create), attribution: TestData.invalid_click_attrs)
       assert json_response(conn, 422)["errors"] != %{}
     end
 
     test "with user_cookie but url_params and user_id is nil renders a 422 error", %{conn: conn} do
-      conn = post(conn, api_attribution_path(conn, :create), attribution: @invalid_click_attrs2)
+      conn = post(conn, api_attribution_path(conn, :create), attribution: TestData.invalid_click_attrs2)
+
       assert json_response(conn, 422)["errors"] != %{}
     end
   end
 
   describe "create login attribution" do
     test "with valid details renders login attribution", %{conn: conn} do
-      post(conn, api_attribution_path(conn, :create), attribution: @valid_login_attrs)
+      post(conn, api_attribution_path(conn, :create), attribution: TestData.valid_login_attrs)
       assert %{"event" => "login", "user_cookie" => "randomusercookie", "user_id" => 3}
     end
 
     test "with url_params but user_cookie is nil renders a 422 error", %{conn: conn} do
-      conn = post(conn, api_attribution_path(conn, :create), attribution: @invalid_login_without_user_cookie_attrs)
+      conn = post(conn, api_attribution_path(conn, :create), attribution: TestData.invalid_login_without_user_cookie_attrs)
       assert json_response(conn, 422)["errors"] != %{}
     end
 
     test "with user_cookie but url_params and user_id is nil renders a 422 error", %{conn: conn} do
-      conn = post(conn, api_attribution_path(conn, :create), attribution: @invalid_login_without_user_id_attrs)
+      conn = post(conn, api_attribution_path(conn, :create), attribution: TestData.invalid_login_without_user_id_attrs)
       assert json_response(conn, 422)["errors"] != %{}
     end
   end
@@ -158,17 +72,17 @@ defmodule WebsFlyerWeb.API.AttributionControllerTest do
 
   describe "create transaction attribution" do
     test "with valid details renders transaction attribution", %{conn: conn} do
-      post(conn, api_attribution_path(conn, :create), attribution: @valid_transaction_attrs)
+      post(conn, api_attribution_path(conn, :create), attribution: TestData.valid_transaction_attrs)
       assert %{"event" => "transaction", "user_cookie" => "randomusercookie", "user_id" => 3}
     end
 
     test "with user_id but rs_id is nil renders a 422 error", %{conn: conn} do
-      conn = post(conn, api_attribution_path(conn, :create), attribution: @invalid_transaction_without_rs_id_attrs)
+      conn = post(conn, api_attribution_path(conn, :create), attribution: TestData.invalid_transaction_without_rs_id_attrs)
       assert json_response(conn, 422)["errors"] != %{}
     end
 
     test "with rs_id and user_id is nil renders a 422 error", %{conn: conn} do
-      conn = post(conn, api_attribution_path(conn, :create), attribution: @invalid_transaction_without_user_id_attrs)
+      conn = post(conn, api_attribution_path(conn, :create), attribution: TestData.invalid_transaction_without_user_id_attrs)
       assert json_response(conn, 422)["errors"] != %{}
     end
   end
@@ -179,7 +93,7 @@ defmodule WebsFlyerWeb.API.AttributionControllerTest do
 
     test "renders a 404 error", %{conn: conn, attribution: %Attribution{id: id} = _attribution} do
       assert_error_sent(404, fn ->
-        put(conn, "/api/attributions/#{id}", attribution: @update_attrs)
+        put(conn, "/api/attributions/#{id}", attribution: TestData.update_attrs)
       end)
     end
   end

@@ -1,3 +1,4 @@
 alias WebsFlyer.Affiliates
 alias WebsFlyer.Repo
-alias Affiliates.Schemas.{Attribution, MediaSource}
+alias WebsFlyer.Affiliates.{Attributions, MediaSources, UserAttributions}
+alias WebsFlyer.Affiliates.Schemas.{Attribution, MediaSource, UserAttribution}

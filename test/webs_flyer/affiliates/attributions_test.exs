@@ -1,17 +1,18 @@
 defmodule WebsFlyer.Affiliates.Schemas.AttributionsTest do
   use WebsFlyer.DataCase
 
-  alias WebsFlyer.Affiliates.Schemas.{Attribution}
-  alias WebsFlyer.Affiliates.Attributions
+  alias WebsFlyer.Affiliates.Schemas.{Attribution, UserAttribution}
+  alias WebsFlyer.Affiliates.{Attributions, MediaSources}
+  alias WebsFlyer.TestData
   describe "attributions" do
 
-    @valid_attrs %{aff_name: "affiliate_name", event: "click", rs_id: 3600, s2s_post_params: "some s2s_post_params", status: "some status", transaction_id: "some transaction_id", url_params: "?utm_source=affiliate_name&utm_medium=Affiliate", user_cookie: "randomusercookie", user_id: 3600}
+    @valid_attrs %{event: "click", url_params: "?utm_source=shopback&utm_medium=Affiliate", user_cookie: "randomusercookie"}
     @valid_click_attrs %{"url_params" => "?utm_source=affiliate_name&utm_medium=Affiliate", "user_cookie" => "randomusercookie", "user_id" => nil, "event" => "click"} 
     @valid_login_attrs %{"user_cookie" => "randomusercookie", "user_id" => 4, "event" => "login"} 
     @invalid_login_without_user_cookie_attrs %{"event" => "login", "user_cookie" => "randomusercookie"}
     @invalid_login_without_user_id_attrs %{"event" => "login", "user_cookie" => "randomusercookie"}
     @invalid_attrs %{aff_name: nil, event: nil, rs_id: nil, s2s_post_params: nil, status: nil, transaction_id: nil, url_params: nil, user_cookie: nil, user_id: nil}
-
+    @valid_media_source TestData.valid_media_source_attrs
     def attribution_fixture(attrs \\ %{}) do
       {:ok, attribution} =
         attrs
@@ -37,7 +38,9 @@ defmodule WebsFlyer.Affiliates.Schemas.AttributionsTest do
     end
 
     test "create_attribution/1 with valid click attribution data creates a click attribution" do
-      assert {:ok, attribution = %Attribution{event: "click"}} = Attributions.create_attribution(@valid_click_attrs)
+      assert {:ok, media_source} = MediaSources.create_media_source(@valid_media_source)
+      assert {:ok, [attribution, user_attribution] = [%Attribution{event: "click"}, %{}]} = Attributions.create_attribution(@valid_click_attrs)
+ 
       assert attribution.url_params() == "?utm_source=affiliate_name&utm_medium=Affiliate"
       assert attribution.user_cookie() == "randomusercookie"
       assert attribution.aff_name() == "affiliate_name"
@@ -53,7 +56,7 @@ defmodule WebsFlyer.Affiliates.Schemas.AttributionsTest do
     end
 
     test "create_attribution/1 with url_params, aff_name and user_cookie and event `click` attribution" do
-      assert {:ok, %Attribution{} = attribution} = Attributions.create_attribution(@valid_click_attrs)
+      assert {:ok, [%Attribution{}, %UserAttribution{}] = [attribution, user_attribution]} = Attributions.create_attribution(@valid_click_attrs)
       assert "click" = attribution.event
     end
 

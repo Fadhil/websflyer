@@ -1,6 +1,7 @@
 defmodule WebsFlyer.Affiliates.UserAttributions do
   alias WebsFlyer.Repo
   import Ecto.Query, only: [from: 2]
+
   @moduledoc """
   # Affiliates.UserAttributions
 
@@ -10,7 +11,8 @@ defmodule WebsFlyer.Affiliates.UserAttributions do
   import Ecto.Query, warn: false
   alias WebsFlyer.Repo
 
-  alias WebsFlyer.Affiliates.Schemas.{UserAttribution}
+  alias WebsFlyer.Affiliates.Schemas.{UserAttribution}  
+  require Logger
   @doc """
   Returns the list of user_attributions.
 
@@ -26,6 +28,21 @@ defmodule WebsFlyer.Affiliates.UserAttributions do
 
   """
   def get_user_attribution!(id), do: Repo.get!(UserAttribution, id)
+
+  @doc """
+  Gets a single user_attribution by cookie
+
+  Returns {:error, nil} if the User attribution does no exist.
+  """
+  def get_by_user_cookie(user_cookie) do
+    from(
+      ua in UserAttribution,
+      where: ua.user_cookie == ^user_cookie,
+      order_by: [desc: :updated_at]
+    )
+    |> Repo.all()
+    |> List.first()
+  end
 
   @doc """
   Creates a user_attribution.

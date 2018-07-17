@@ -2,6 +2,7 @@ defmodule WebsFlyer.Affiliates.UserAttributionsTest do
   use WebsFlyer.DataCase
 
   alias WebsFlyer.Affiliates
+  alias Affiliates.UserAttributions
   alias WebsFlyer.Affiliates.Schemas.UserAttribution
   describe "user_attributions" do
 
@@ -13,27 +14,28 @@ defmodule WebsFlyer.Affiliates.UserAttributionsTest do
       {:ok, user_attribution} =
         attrs
         |> Enum.into(@valid_attrs)
-        |> Affiliates.UserAttributions.create_user_attribution()
+        |> UserAttributions.create_user_attribution()
 
       user_attribution
     end
 
     test "list_user_attributions/0 returns all user_attributions" do
       user_attribution = user_attribution_fixture()
-      assert Affiliates.UserAttributions.list_user_attributions() == [user_attribution]
+      assert UserAttributions.list_user_attributions() == [user_attribution]
     end
 
     test "get_user_attribution!/1 returns the user_attribution with given id" do
       user_attribution = user_attribution_fixture()
-      assert Affiliates.UserAttributions.get_user_attribution!(user_attribution.id) == user_attribution
+      assert UserAttributions.get_user_attribution!(user_attribution.id) == user_attribution
     end
 
     test "get_by_user_cookie/1 returns the user_attribution with given user_cookie" do
       user_attribution = user_attribution_fixture()
+      assert user_attribution = UserAttributions.get_by_user_cookie("randomusercookie")
     end
 
     test "create_user_attribution/1 with valid data creates a user_attribution" do
-      assert {:ok, %UserAttribution{} = user_attribution} = Affiliates.UserAttributions.create_user_attribution(@valid_attrs)
+      assert {:ok, %UserAttribution{} = user_attribution} = UserAttributions.create_user_attribution(@valid_attrs)
       assert user_attribution.attributed_to == "affiliate_name"
       assert user_attribution.attribution_start_timestamp == 42
       assert user_attribution.attribution_window_in_seconds == 42
@@ -42,12 +44,12 @@ defmodule WebsFlyer.Affiliates.UserAttributionsTest do
     end
 
     test "create_user_attribution/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Affiliates.UserAttributions.create_user_attribution(@invalid_attrs)
+      assert {:error, %Ecto.Changeset{}} = UserAttributions.create_user_attribution(@invalid_attrs)
     end
 
     test "update_user_attribution/2 with valid data updates the user_attribution" do
       user_attribution = user_attribution_fixture()
-      assert {:ok, user_attribution} = Affiliates.UserAttributions.update_user_attribution(user_attribution, @update_attrs)
+      assert {:ok, user_attribution} = UserAttributions.update_user_attribution(user_attribution, @update_attrs)
       assert %UserAttribution{} = user_attribution
       assert user_attribution.attributed_to == "update_affiliate_name"
       assert user_attribution.attribution_start_timestamp == 43
@@ -58,19 +60,19 @@ defmodule WebsFlyer.Affiliates.UserAttributionsTest do
 
     test "update_user_attribution/2 with invalid data returns error changeset" do
       user_attribution = user_attribution_fixture()
-      assert {:error, %Ecto.Changeset{}} = Affiliates.UserAttributions.update_user_attribution(user_attribution, @invalid_attrs)
-      assert user_attribution == Affiliates.UserAttributions.get_user_attribution!(user_attribution.id)
+      assert {:error, %Ecto.Changeset{}} = UserAttributions.update_user_attribution(user_attribution, @invalid_attrs)
+      assert user_attribution == UserAttributions.get_user_attribution!(user_attribution.id)
     end
 
     test "delete_user_attribution/1 deletes the user_attribution" do
       user_attribution = user_attribution_fixture()
-      assert {:ok, %UserAttribution{}} = Affiliates.UserAttributions.delete_user_attribution(user_attribution)
-      assert_raise Ecto.NoResultsError, fn -> Affiliates.UserAttributions.get_user_attribution!(user_attribution.id) end
+      assert {:ok, %UserAttribution{}} = UserAttributions.delete_user_attribution(user_attribution)
+      assert_raise Ecto.NoResultsError, fn -> UserAttributions.get_user_attribution!(user_attribution.id) end
     end
 
     test "change_user_attribution/1 returns a user_attribution changeset" do
       user_attribution = user_attribution_fixture()
-      assert %Ecto.Changeset{} = Affiliates.UserAttributions.change_user_attribution(user_attribution)
+      assert %Ecto.Changeset{} = UserAttributions.change_user_attribution(user_attribution)
     end
   end
 end

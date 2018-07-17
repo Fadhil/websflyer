@@ -1,6 +1,7 @@
 defmodule WebsFlyer.Affiliates.MediaSources do
   alias WebsFlyer.Repo
   import Ecto.Query, only: [from: 2]
+
   @moduledoc """
   # Affiliates
 
@@ -11,6 +12,7 @@ defmodule WebsFlyer.Affiliates.MediaSources do
   alias WebsFlyer.Repo
 
   alias WebsFlyer.Affiliates.Schemas.{Attribution, MediaSource}
+
   @doc """
   Returns the list of media_sources.
   """
@@ -29,12 +31,20 @@ defmodule WebsFlyer.Affiliates.MediaSources do
   Gets a single media_source by its aff_name. If more than 1 entries exists,
   the latest one is returned
   """
+  def get_media_source_by_name(nil) do
+    nil
+  end
+
   def get_media_source_by_name(name) do
-    q = from m in MediaSource,
+    q =
+      from(
+        m in MediaSource,
         where: m.aff_name == ^name,
         order_by: [desc: m.inserted_at]
+      )
+
     Repo.all(q)
-    |> List.first
+    |> List.first()
   end
 
   @doc """
@@ -75,8 +85,11 @@ defmodule WebsFlyer.Affiliates.MediaSources do
   """
   def get_attribution_window(source_name) do
     one_month_in_seconds = 30 * 24 * 60 * 60
+
     case get_media_source_by_name(source_name) do
-      nil -> one_month_in_seconds
+      nil ->
+        one_month_in_seconds
+
       media_source ->
         media_source.attribution_window_in_seconds || one_month_in_seconds
     end

@@ -1,3 +1,2 @@
-defmodule WebsFlyer.Affiliates do 
-  
+defmodule WebsFlyer.Affiliates do
 end

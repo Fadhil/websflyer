@@ -8,8 +8,14 @@ defmodule WebsFlyerWeb.Router do
   scope "/api", WebsFlyerWeb.API do
     pipe_through(:api)
 
-    resources("/attributions", AttributionController, as: :api_attribution, except: [:update, :delete])
-    resources "/media_sources", MediaSourceController, as: :api_media_source
-    resources "/user_attributions", UserAttributionController, as: :api_user_attribution
+    resources(
+      "/attributions",
+      AttributionController,
+      as: :api_attribution,
+      except: [:update, :delete]
+    )
+
+    resources("/media_sources", MediaSourceController, as: :api_media_source)
+    resources("/user_attributions", UserAttributionController, as: :api_user_attribution)
   end
 end

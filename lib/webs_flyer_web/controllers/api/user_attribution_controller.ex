@@ -4,7 +4,7 @@ defmodule WebsFlyerWeb.API.UserAttributionController do
   alias WebsFlyer.Affiliates
   alias WebsFlyer.Affiliates.Schemas.UserAttribution
 
-  action_fallback WebsFlyerWeb.FallbackController
+  action_fallback(WebsFlyerWeb.FallbackController)
 
   def index(conn, _params) do
     user_attributions = Affiliates.UserAttributions.list_user_attributions()
@@ -12,7 +12,8 @@ defmodule WebsFlyerWeb.API.UserAttributionController do
   end
 
   def create(conn, %{"user_attribution" => user_attribution_params}) do
-    with {:ok, %UserAttribution{} = user_attribution} <- Affiliates.UserAttributions.create_user_attribution(user_attribution_params) do
+    with {:ok, %UserAttribution{} = user_attribution} <-
+           Affiliates.UserAttributions.create_user_attribution(user_attribution_params) do
       conn
       |> put_status(:created)
       |> put_resp_header("location", api_user_attribution_path(conn, :show, user_attribution))
@@ -28,14 +29,20 @@ defmodule WebsFlyerWeb.API.UserAttributionController do
   def update(conn, %{"id" => id, "user_attribution" => user_attribution_params}) do
     user_attribution = Affiliates.UserAttributions.get_user_attribution!(id)
 
-    with {:ok, %UserAttribution{} = user_attribution} <- Affiliates.UserAttributions.update_user_attribution(user_attribution, user_attribution_params) do
+    with {:ok, %UserAttribution{} = user_attribution} <-
+           Affiliates.UserAttributions.update_user_attribution(
+             user_attribution,
+             user_attribution_params
+           ) do
       render(conn, "show.json", user_attribution: user_attribution)
     end
   end
 
   def delete(conn, %{"id" => id}) do
     user_attribution = Affiliates.UserAttributions.get_user_attribution!(id)
-    with {:ok, %UserAttribution{}} <- Affiliates.UserAttributions.delete_user_attribution(user_attribution) do
+
+    with {:ok, %UserAttribution{}} <-
+           Affiliates.UserAttributions.delete_user_attribution(user_attribution) do
       send_resp(conn, :no_content, "")
     end
   end
