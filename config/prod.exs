@@ -15,8 +15,11 @@ use Mix.Config
 # which you typically run after static files are built.
 config :webs_flyer, WebsFlyerWeb.Endpoint,
   load_from_system_env: true,
-  url: [host: "example.com", port: 80],
-  cache_static_manifest: "priv/static/cache_manifest.json"
+  http: [port: 8000],
+  url: [host: "localhost", port: 8000],
+  cache_static_manifest: "priv/static/cache_manifest.json",
+  server: true,
+  root: "."
 
 # Do not print debug messages in production
 config :logger, level: :info
