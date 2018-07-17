@@ -42,15 +42,16 @@ defmodule WebsFlyerWeb.AttributionWindowTest do
       assert %UserAttribution{} = first_user_attribution = UserAttributions.get_by_user_cookie("random1234usercookie")
       assert first_user_attribution.attributed_to == "shopback"
       assert not is_nil(first_user_attribution.attribution_start_timestamp)
+      assert first_user_attribution.attribution_window_in_seconds == 86400
 
-      :timer.sleep(500)
+      :timer.sleep(1000)
 
       assert {:ok, _click_attribution} = Attributions.create_attribution(TestData.click_carousell_attrs)
       assert %UserAttribution{} = second_user_attribution = UserAttributions.get_by_user_cookie("random1234usercookie")
       assert second_user_attribution.attributed_to == "carousell"
       assert first_user_attribution.id == second_user_attribution.id
       assert second_user_attribution.attribution_start_timestamp > first_user_attribution.attribution_start_timestamp
-      
+      assert second_user_attribution.attribution_window_in_seconds == 172800
     end
   end
 

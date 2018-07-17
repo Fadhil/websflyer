@@ -57,14 +57,14 @@ defmodule WebsFlyer.Affiliates.Attributions do
                 "attributed_to" => click_attribution.aff_name,
                 "attribution_start_timestamp" => get_timestamp(click_attribution.inserted_at),
                 "attribution_window_in_seconds" =>
-                  MediaSources.get_attribution_window(click_attribution.attributed_to)
+                  MediaSources.get_attribution_window(click_attribution.aff_name)
               })
             ua ->
               {:ok, user_attribution} = UserAttributions.update_user_attribution(ua, %{
                 "attributed_to" => click_attribution.aff_name,
                 "attribution_start_timestamp" => get_timestamp(click_attribution.inserted_at),
                 "attribution_window_in_seconds" =>
-                  MediaSources.get_attribution_window(click_attribution.attributed_to) 
+                  MediaSources.get_attribution_window(click_attribution.aff_name) 
               })
           end
 

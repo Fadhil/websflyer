@@ -143,7 +143,7 @@ defmodule WebsFlyer.TestData do
     %{
     "aff_name" => "carousell",
     "name" => "Carousell People",
-    "attribution_window_in_seconds" => 24 * 60 * 60
+    "attribution_window_in_seconds" => 48 * 60 * 60
    }
   end
 
