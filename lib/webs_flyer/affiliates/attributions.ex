@@ -68,7 +68,14 @@ defmodule WebsFlyer.Affiliates.Attributions do
         user_attribution = UserAttributions.get_by_user_cookie(login_attribution.user_cookie)
         case user_attribution do
           nil -> 
-            nil
+            UserAttributions.create_user_attribution(%{
+              "user_cookie" => login_attribution.user_cookie,
+              "user_id" => login_attribution.user_id,
+              "attributed_to" => login_attribution.aff_name,
+              "attribution_start_timestamp" => get_timestamp(login_attribution.inserted_at),
+              "attribution_window_in_seconds" =>
+                MediaSources.get_attribution_window(login_attribution.attributed_to)
+            })
           %UserAttribution{} = user_attribution ->
             UserAttributions.update_user_attribution(user_attribution, %{user_id: login_attribution.user_id})
         end
