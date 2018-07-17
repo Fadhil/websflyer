@@ -139,19 +139,43 @@ defmodule WebsFlyer.TestData do
    }
   end
 
+  def carousell_media_source do 
+    %{
+    "aff_name" => "carousell",
+    "name" => "Carousell People",
+    "attribution_window_in_seconds" => 48 * 60 * 60
+   }
+  end
+
   def click_shopback_attrs do 
     %{
     "event" => "click",
     "url_params" => "?utm_source=shopback&utm_medium=Affiliate",
-    "user_cookie" => "randomshopbackusercookie"
+    "user_cookie" => "random1234usercookie"
    }
+  end
+
+  def click_carousell_attrs do
+    %{
+      "event" => "click",
+      "url_params" => "?utm_source=carousell&utm_medium=Affiliate",
+      "user_cookie" => "random1234usercookie"
+     }    
+  end
+
+  def login_user_1234_attrs do
+    %{
+      "event" => "login",
+      "user_cookie" => "random1234usercookie",
+      "user_id" => 1234
+     }
   end
 
   def login_attrs do 
     %{
     "event" => "login",
     "user_id" => 3,
-    "user_cookie" => "randomshopbackusercookie"
+    "user_cookie" => "random1234usercookie"
    }
   end
 end

@@ -7,7 +7,7 @@ defmodule WebsFlyer.Affiliates.Attributions do
 
   alias WebsFlyer.Repo
   alias WebsFlyer.Affiliates.{MediaSources, UserAttributions}
-  alias WebsFlyer.Affiliates.Schemas.{Attribution}
+  alias WebsFlyer.Affiliates.Schemas.{Attribution, UserAttribution}
   import Ecto.Query, only: [from: 2]
   require Logger
   @doc """
@@ -46,23 +46,55 @@ defmodule WebsFlyer.Affiliates.Attributions do
   """
 
   def create_attribution(%{"event" => "click"} = attrs) do
-
     case basic_attribution(attrs) do
       {:ok, click_attribution} -> 
-        {:ok, user_attribution} = UserAttributions.create_user_attribution(%{
-          "user_cookie" => click_attribution.user_cookie,
-          "user_id" => click_attribution.user_id,
-          "attributed_to" => click_attribution.aff_name,
-          "attribution_start_timestamp" => get_timestamp(click_attribution.inserted_at),
-          "attribution_window_in_seconds" =>
-            MediaSources.get_attribution_window(click_attribution.attributed_to)
-        })
+        {:ok, user_attribution} = 
+          case UserAttributions.get_by_user_cookie(click_attribution.user_cookie) do
+            nil ->
+              {:ok, user_attribution} = UserAttributions.create_user_attribution(%{
+                "user_cookie" => click_attribution.user_cookie,
+                "user_id" => click_attribution.user_id,
+                "attributed_to" => click_attribution.aff_name,
+                "attribution_start_timestamp" => get_timestamp(click_attribution.inserted_at),
+                "attribution_window_in_seconds" =>
+                  MediaSources.get_attribution_window(click_attribution.aff_name)
+              })
+            ua ->
+              {:ok, user_attribution} = UserAttributions.update_user_attribution(ua, %{
+                "attributed_to" => click_attribution.aff_name,
+                "attribution_start_timestamp" => get_timestamp(click_attribution.inserted_at),
+                "attribution_window_in_seconds" =>
+                  MediaSources.get_attribution_window(click_attribution.aff_name) 
+              })
+          end
+
         {:ok, [click_attribution, user_attribution]}
       {:error, changeset} ->
         {:error, changeset}
     end
+  end
 
-
+  def create_attribution(%{"event" => "login"} = attrs) do
+    case basic_attribution(attrs) do
+      {:ok, login_attribution} -> 
+        user_attribution = UserAttributions.get_by_user_cookie(login_attribution.user_cookie)
+        case user_attribution do
+          nil -> 
+            UserAttributions.create_user_attribution(%{
+              "user_cookie" => login_attribution.user_cookie,
+              "user_id" => login_attribution.user_id,
+              "attributed_to" => login_attribution.aff_name,
+              "attribution_start_timestamp" => get_timestamp(login_attribution.inserted_at),
+              "attribution_window_in_seconds" =>
+                MediaSources.get_attribution_window(login_attribution.attributed_to)
+            })
+          %UserAttribution{} = user_attribution ->
+            UserAttributions.update_user_attribution(user_attribution, %{user_id: login_attribution.user_id})
+        end
+        {:ok, login_attribution}
+      {:error, changeset} ->
+        {:error, changeset}
+    end
   end
 
   def create_attribution(attrs) do

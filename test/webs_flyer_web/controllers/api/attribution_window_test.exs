@@ -21,29 +21,62 @@ defmodule WebsFlyerWeb.AttributionWindowTest do
   end
 
 
-  describe "click event occurs" do
+  describe "click event occurs when a user_attribution for that user_cookie doesn't exists" do
     test "a user_attribution is created with the user_cookie and affiliate name, attribution window and timestamp" do
       assert {:ok, media_source} = MediaSources.create_media_source(TestData.shopback_media_source)
       assert media_source.aff_name == "shopback"
-      assert {:ok, click_attribution} = Attributions.create_attribution(TestData.click_shopback_attrs)
-      assert %UserAttribution{} = user_attribution = UserAttributions.get_by_user_cookie("randomshopbackusercookie")
+      assert nil == UserAttributions.get_by_user_cookie("random1234usercookie")
+      assert {:ok, _click_attribution} = Attributions.create_attribution(TestData.click_shopback_attrs)
+      assert %UserAttribution{} = user_attribution = UserAttributions.get_by_user_cookie("random1234usercookie")
       assert user_attribution.attributed_to == "shopback"
       assert not is_nil(user_attribution.attribution_start_timestamp)
     end
-    # test "within a clicks attribution window creates a login entry attributed to that affiliate", %{conn: conn} do
-    #   {:ok, media_source} = Affiliates.create_media_source(@shopback_media_source)
-    #   {:ok, click_attribution} = Affiliates.create_attribution(@click_shopback_attrs)
-    #   assert NaiveDateTime.diff(click_attribution.inserted_at , NaiveDateTime.utc_now) < 300
-    #   three_hours_ago =  NaiveDateTime.add(NaiveDateTime.utc_now, 3*60*60, :second)
-      
-    #   {:ok, click_attribution} = Repo.update(Ecto.Changeset.change(click_attribution, inserted_at: three_hours_ago))
+  end
 
-    #   assert click_attribution.inserted_at() == three_hours_ago
-    #   assert click_attribution.aff_name() == "shopback"
+  describe "click event occurs when a user_attribution for that user_cookie exists" do
+    test "the user_attribution is updated with the new affiliate attribution, attribution window and timestamp" do
+      assert {:ok, _sb_media_source} = MediaSources.create_media_source(TestData.shopback_media_source)
+      assert {:ok, _cs_media_source} = MediaSources.create_media_source(TestData.carousell_media_source)
 
-    #   {:ok, login_attribution} = Affiliates.create_attribution(@login_attrs)
+      assert {:ok, _click_attribution} = Attributions.create_attribution(TestData.click_shopback_attrs)
+      assert %UserAttribution{} = first_user_attribution = UserAttributions.get_by_user_cookie("random1234usercookie")
+      assert first_user_attribution.attributed_to == "shopback"
+      assert not is_nil(first_user_attribution.attribution_start_timestamp)
+      assert first_user_attribution.attribution_window_in_seconds == 86400
 
-    #   assert login_attribution.attributed_to() == "shopback"
-    # end
+      :timer.sleep(1000)
+
+      assert {:ok, _click_attribution} = Attributions.create_attribution(TestData.click_carousell_attrs)
+      assert %UserAttribution{} = second_user_attribution = UserAttributions.get_by_user_cookie("random1234usercookie")
+      assert second_user_attribution.attributed_to == "carousell"
+      assert first_user_attribution.id == second_user_attribution.id
+      assert second_user_attribution.attribution_start_timestamp > first_user_attribution.attribution_start_timestamp
+      assert second_user_attribution.attribution_window_in_seconds == 172800
+    end
+  end
+
+  describe "login event occurs" do
+    test "when a user_attribution with the user_cookie exists, the user_attribution is updated with the user_id" do
+      assert {:ok, media_source} = MediaSources.create_media_source(TestData.shopback_media_source)
+      assert media_source.aff_name == "shopback"
+
+      assert {:ok, _click_attribution} = Attributions.create_attribution(TestData.click_shopback_attrs)
+      assert %UserAttribution{} = user_attribution = UserAttributions.get_by_user_cookie("random1234usercookie")
+      assert user_attribution.user_id == nil
+
+      assert {:ok, _login_attribution} = Attributions.create_attribution(TestData.login_user_1234_attrs)
+      assert %UserAttribution{} = user_attribution = UserAttributions.get_by_user_cookie("random1234usercookie")
+      assert user_attribution.user_id == 1234
+    end
+
+    test "when a user_attribution with the user_cookie doesn't exist, a new user_attribution is created with the user_cookie and user_id" do
+      assert {:ok, media_source} = MediaSources.create_media_source(TestData.shopback_media_source)
+      assert media_source.aff_name == "shopback"
+      assert nil == UserAttributions.get_by_user_cookie("random1234usercookie")
+       
+      assert {:ok, _login_attribution} = Attributions.create_attribution(TestData.login_user_1234_attrs)
+      assert %UserAttribution{} = user_attribution = UserAttributions.get_by_user_cookie("random1234usercookie")
+      assert user_attribution.user_id == 1234
+    end
   end
 end
