@@ -48,14 +48,26 @@ defmodule WebsFlyer.Affiliates.Attributions do
   def create_attribution(%{"event" => "click"} = attrs) do
     case basic_attribution(attrs) do
       {:ok, click_attribution} -> 
-        {:ok, user_attribution} = UserAttributions.create_user_attribution(%{
-          "user_cookie" => click_attribution.user_cookie,
-          "user_id" => click_attribution.user_id,
-          "attributed_to" => click_attribution.aff_name,
-          "attribution_start_timestamp" => get_timestamp(click_attribution.inserted_at),
-          "attribution_window_in_seconds" =>
-            MediaSources.get_attribution_window(click_attribution.attributed_to)
-        })
+        {:ok, user_attribution} = 
+          case UserAttributions.get_by_user_cookie(click_attribution.user_cookie) do
+            nil ->
+              {:ok, user_attribution} = UserAttributions.create_user_attribution(%{
+                "user_cookie" => click_attribution.user_cookie,
+                "user_id" => click_attribution.user_id,
+                "attributed_to" => click_attribution.aff_name,
+                "attribution_start_timestamp" => get_timestamp(click_attribution.inserted_at),
+                "attribution_window_in_seconds" =>
+                  MediaSources.get_attribution_window(click_attribution.attributed_to)
+              })
+            ua ->
+              {:ok, user_attribution} = UserAttributions.update_user_attribution(ua, %{
+                "attributed_to" => click_attribution.aff_name,
+                "attribution_start_timestamp" => get_timestamp(click_attribution.inserted_at),
+                "attribution_window_in_seconds" =>
+                  MediaSources.get_attribution_window(click_attribution.attributed_to) 
+              })
+          end
+
         {:ok, [click_attribution, user_attribution]}
       {:error, changeset} ->
         {:error, changeset}

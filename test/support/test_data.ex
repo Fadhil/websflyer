@@ -139,6 +139,14 @@ defmodule WebsFlyer.TestData do
    }
   end
 
+  def carousell_media_source do 
+    %{
+    "aff_name" => "carousell",
+    "name" => "Carousell People",
+    "attribution_window_in_seconds" => 24 * 60 * 60
+   }
+  end
+
   def click_shopback_attrs do 
     %{
     "event" => "click",
