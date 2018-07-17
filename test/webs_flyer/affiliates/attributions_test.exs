@@ -38,8 +38,8 @@ defmodule WebsFlyer.Affiliates.Schemas.AttributionsTest do
     end
 
     test "create_attribution/1 with valid click attribution data creates a click attribution" do
-      assert {:ok, media_source} = MediaSources.create_media_source(@valid_media_source)
-      assert {:ok, [attribution, user_attribution] = [%Attribution{event: "click"}, %{}]} = Attributions.create_attribution(@valid_click_attrs)
+      assert {:ok, _media_source} = MediaSources.create_media_source(@valid_media_source)
+      assert {:ok, [attribution, _user_attribution] = [%Attribution{event: "click"}, %{}]} = Attributions.create_attribution(@valid_click_attrs)
  
       assert attribution.url_params() == "?utm_source=affiliate_name&utm_medium=Affiliate"
       assert attribution.user_cookie() == "randomusercookie"
@@ -56,7 +56,7 @@ defmodule WebsFlyer.Affiliates.Schemas.AttributionsTest do
     end
 
     test "create_attribution/1 with url_params, aff_name and user_cookie and event `click` attribution" do
-      assert {:ok, [%Attribution{}, %UserAttribution{}] = [attribution, user_attribution]} = Attributions.create_attribution(@valid_click_attrs)
+      assert {:ok, [%Attribution{}, %UserAttribution{}] = [attribution, _user_attribution]} = Attributions.create_attribution(@valid_click_attrs)
       assert "click" = attribution.event
     end
 

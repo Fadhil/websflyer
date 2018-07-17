@@ -1,12 +1,12 @@
 defmodule WebsFlyerWeb.API.AttributionControllerTest do
   use WebsFlyerWeb.ConnCase
 
-  alias WebsFlyer.Affiliates.Schemas.{Attribution, UserAttribution, MediaSource}
+  alias WebsFlyer.Affiliates.Schemas.{Attribution}
   alias WebsFlyer.Affiliates.Attributions  
   alias WebsFlyer.TestData
 
   def fixture(:attribution) do
-    {:ok, [attribution, user_attribution]} = Attributions.create_attribution(TestData.create_attrs)
+    {:ok, [attribution, _user_attribution]} = Attributions.create_attribution(TestData.create_attrs)
     attribution
   end
 

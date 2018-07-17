@@ -31,7 +31,7 @@ defmodule WebsFlyer.Affiliates.UserAttributionsTest do
 
     test "get_by_user_cookie/1 returns the user_attribution with given user_cookie" do
       user_attribution = user_attribution_fixture()
-      assert user_attribution = UserAttributions.get_by_user_cookie("randomusercookie")
+      assert user_attribution == UserAttributions.get_by_user_cookie("randomusercookie")
     end
 
     test "create_user_attribution/1 with valid data creates a user_attribution" do

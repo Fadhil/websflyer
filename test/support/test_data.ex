@@ -130,4 +130,28 @@ defmodule WebsFlyer.TestData do
   def invalid_media_source_attrs do
     %{aff_name: nil, attribution_window_in_seconds: nil, do_postback: nil, name: nil}
   end
+
+  def shopback_media_source do 
+    %{
+    "aff_name" => "shopback",
+    "name" => "Shopback People",
+    "attribution_window_in_seconds" => 24 * 60 * 60
+   }
+  end
+
+  def click_shopback_attrs do 
+    %{
+    "event" => "click",
+    "url_params" => "?utm_source=shopback&utm_medium=Affiliate",
+    "user_cookie" => "randomshopbackusercookie"
+   }
+  end
+
+  def login_attrs do 
+    %{
+    "event" => "login",
+    "user_id" => 3,
+    "user_cookie" => "randomshopbackusercookie"
+   }
+  end
 end
