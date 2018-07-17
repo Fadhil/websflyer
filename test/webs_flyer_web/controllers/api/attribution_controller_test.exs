@@ -2,7 +2,7 @@ defmodule WebsFlyerWeb.API.AttributionControllerTest do
   use WebsFlyerWeb.ConnCase
 
   alias WebsFlyer.Affiliates.Schemas.{Attribution}
-  alias WebsFlyer.Affiliates.Attributions  
+  alias WebsFlyer.Affiliates.{Attributions, MediaSources}  
   alias WebsFlyer.TestData
 
   def fixture(:attribution) do
@@ -11,13 +11,17 @@ defmodule WebsFlyerWeb.API.AttributionControllerTest do
   end
 
   setup %{conn: conn} do
+    {:ok, _media_source} = MediaSources.create_media_source(TestData.shopback_media_source)
+    {:ok, _click_attribution} = Attributions.create_attribution(TestData.click_shopback_attrs)
+    {:ok, _login_attribution} = Attributions.create_attribution(TestData.login_user_1234_attrs)
+    
     {:ok, conn: put_req_header(conn, "accept", "application/json")}
   end
 
   describe "index" do
     test "lists all attributions", %{conn: conn} do
       conn = get(conn, api_attribution_path(conn, :index))
-      assert json_response(conn, 200)["data"] == []
+      assert [_head|_tail] = json_response(conn, 200)["data"]
     end
   end
 
@@ -71,9 +75,10 @@ defmodule WebsFlyerWeb.API.AttributionControllerTest do
 
 
   describe "create transaction attribution" do
+
     test "with valid details renders transaction attribution", %{conn: conn} do
-      post(conn, api_attribution_path(conn, :create), attribution: TestData.valid_transaction_attrs)
-      assert %{"event" => "transaction", "user_cookie" => "randomusercookie", "user_id" => 3}
+      post(conn, api_attribution_path(conn, :create), attribution: TestData.transaction_user_1234_attrs)
+      assert %{"event" => "transaction", "user_cookie" => "randomusercookie", "user_id" => 1234}
     end
 
     test "with user_id but rs_id is nil renders a 422 error", %{conn: conn} do

@@ -79,4 +79,38 @@ defmodule WebsFlyerWeb.AttributionWindowTest do
       assert user_attribution.user_id == 1234
     end
   end
+
+  describe "transaction event occurs" do
+    test "creates transaction attribution when a user click_attribution and login_attribution exists and the transaction occurs within the user_attribution's attribution window" do
+      assert {:ok, media_source} = MediaSources.create_media_source(TestData.shopback_media_source)
+      assert media_source.aff_name == "shopback"
+
+      assert {:ok, _click_attribution} = Attributions.create_attribution(TestData.click_shopback_attrs)
+      assert %UserAttribution{} = user_attribution = UserAttributions.get_by_user_cookie("random1234usercookie")
+      assert user_attribution.user_id == nil
+
+      assert {:ok, _login_attribution} = Attributions.create_attribution(TestData.login_user_1234_attrs)
+      assert %UserAttribution{} = user_attribution = UserAttributions.get_by_user_cookie("random1234usercookie")
+      assert user_attribution.user_id == 1234
+
+      assert {:ok, transaction_attribution} = Attributions.create_attribution(TestData.transaction_user_1234_attrs)
+      assert transaction_attribution.aff_name == "shopback"
+    end
+
+    test "doesn't create a transaction attribution when  the transaction occurs outside of the user_attribution's attribution window" do
+      assert {:ok, media_source} = MediaSources.create_media_source(TestData.shopback_media_source)
+      assert media_source.aff_name == "shopback"
+
+      assert {:ok, _click_attribution} = Attributions.create_attribution(TestData.click_shopback_attrs)
+      assert %UserAttribution{} = user_attribution = UserAttributions.get_by_user_cookie("random1234usercookie")
+      assert user_attribution.user_id == nil
+      {:ok, _updated_ua} = UserAttributions.update_user_attribution(user_attribution, %{attribution_start_timestamp: user_attribution.attribution_start_timestamp - 90000})
+
+      assert {:ok, _login_attribution} = Attributions.create_attribution(TestData.login_user_1234_attrs)
+      assert %UserAttribution{} = user_attribution = UserAttributions.get_by_user_cookie("random1234usercookie")
+      assert user_attribution.user_id == 1234
+
+      assert {:error, %Ecto.Changeset{}} = Attributions.create_attribution(TestData.transaction_user_1234_attrs)
+    end
+  end
 end

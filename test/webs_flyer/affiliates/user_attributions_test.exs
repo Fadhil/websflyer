@@ -2,7 +2,8 @@ defmodule WebsFlyer.Affiliates.UserAttributionsTest do
   use WebsFlyer.DataCase
 
   alias WebsFlyer.Affiliates
-  alias Affiliates.UserAttributions
+  alias WebsFlyer.TestData
+  alias Affiliates.{Attributions, UserAttributions}
   alias WebsFlyer.Affiliates.Schemas.UserAttribution
   describe "user_attributions" do
 
@@ -32,6 +33,11 @@ defmodule WebsFlyer.Affiliates.UserAttributionsTest do
     test "get_by_user_cookie/1 returns the user_attribution with given user_cookie" do
       user_attribution = user_attribution_fixture()
       assert user_attribution == UserAttributions.get_by_user_cookie("randomusercookie")
+    end
+
+    test "get_by_user_id/1 returns the latest user_attribution with the given user_id" do
+      user_attribution = user_attribution_fixture()
+      assert user_attribution == UserAttributions.get_by_user_id(42)
     end
 
     test "create_user_attribution/1 with valid data creates a user_attribution" do
@@ -73,6 +79,18 @@ defmodule WebsFlyer.Affiliates.UserAttributionsTest do
     test "change_user_attribution/1 returns a user_attribution changeset" do
       user_attribution = user_attribution_fixture()
       assert %Ecto.Changeset{} = UserAttributions.change_user_attribution(user_attribution)
+    end
+
+    test "within_attribution_window/2 returns true if a given timestamp is within a user_attributions window" do
+      {:ok, user_attribution} = UserAttributions.create_user_attribution(TestData.click_now_user_attribution)
+      
+      assert UserAttributions.within_attribution_window(user_attribution, Attributions.timestamp_now()) == true
+    end
+
+    test "within_attribution_window/2 returns false if a given timestamp not within a user_attributions window" do
+      {:ok, user_attribution} = UserAttributions.create_user_attribution(TestData.click_25hrs_ago_user_attribution)
+
+      assert UserAttributions.within_attribution_window(user_attribution, Attributions.timestamp_now()) == false
     end
   end
 end

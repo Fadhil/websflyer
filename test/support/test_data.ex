@@ -178,4 +178,30 @@ defmodule WebsFlyer.TestData do
     "user_cookie" => "random1234usercookie"
    }
   end
+
+  def transaction_user_1234_attrs do
+    %{
+      "event" => "transaction",
+      "user_id" => 1234,
+      "rs_id" => 5678
+    }
+  end
+
+  def click_now_user_attribution do
+    %{
+      "user_cookie" => "randome_user_cookie",
+      "attributed_to" => "shopback",
+      "attribution_start_timestamp" => DateTime.to_unix(DateTime.from_naive!(NaiveDateTime.utc_now, "Etc/UTC")),
+      "attribution_window_in_seconds" => 86400
+    }
+  end
+
+  def click_25hrs_ago_user_attribution do
+    %{
+      "user_cookie" => "random_user_cookie",
+      "attributed_to" => "shopback",
+      "attribution_start_timestamp" => (DateTime.to_unix(DateTime.from_naive!(NaiveDateTime.utc_now, "Etc/UTC")) - 90000),
+      "attribution_window_in_seconds" => 86400
+    }
+  end
 end

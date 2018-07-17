@@ -9,6 +9,7 @@ defmodule WebsFlyer.Affiliates.Attributions do
   alias WebsFlyer.Affiliates.{MediaSources, UserAttributions}
   alias WebsFlyer.Affiliates.Schemas.{Attribution, UserAttribution}
   import Ecto.Query, only: [from: 2]
+  import Ecto.Changeset
   require Logger
   @doc """
   Returns the list of attributions.
@@ -60,7 +61,7 @@ defmodule WebsFlyer.Affiliates.Attributions do
                   MediaSources.get_attribution_window(click_attribution.aff_name)
               })
             ua ->
-              {:ok, user_attribution} = UserAttributions.update_user_attribution(ua, %{
+              {:ok, _user_attribution} = UserAttributions.update_user_attribution(ua, %{
                 "attributed_to" => click_attribution.aff_name,
                 "attribution_start_timestamp" => get_timestamp(click_attribution.inserted_at),
                 "attribution_window_in_seconds" =>
@@ -97,15 +98,43 @@ defmodule WebsFlyer.Affiliates.Attributions do
     end
   end
 
+  def create_attribution(%{"event" => "transaction", "user_id" => user_id} = attrs) do
+    user_attribution = UserAttributions.get_by_user_id(user_id)
+    case user_attribution do
+      nil ->
+        cs = basic_changeset(attrs)
+        |> add_error(:event, "User attribution not found")
+        {:error, cs}
+      ua ->
+        case UserAttributions.within_attribution_window(ua, timestamp_now()) do
+          true ->
+            attrs = Map.put(attrs, "aff_name", ua.attributed_to)
+            basic_attribution(attrs)
+          false ->
+            cs = basic_changeset(attrs)
+            |> add_error(:event, "This transaction occurred outside of the attribution window")
+            {:error, cs}
+        end
+    end
+  end
+
   def create_attribution(attrs) do
     basic_attribution(attrs)
   end
 
+  def basic_changeset(attrs) do
+    %Attribution{}
+    |> Attribution.changeset(attrs)
+  end
+
   def basic_attribution(attrs) do
-    attribution =
-      %Attribution{}
-      |> Attribution.changeset(attrs)
-      |> Repo.insert()
+    basic_changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def timestamp_now() do
+    now = NaiveDateTime.utc_now
+    get_timestamp(now)
   end
 
   def get_timestamp(naivedatetime) do
