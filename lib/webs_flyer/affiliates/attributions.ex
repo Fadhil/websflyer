@@ -7,7 +7,7 @@ defmodule WebsFlyer.Affiliates.Attributions do
 
   alias WebsFlyer.Repo
   alias WebsFlyer.Affiliates.{MediaSources, UserAttributions}
-  alias WebsFlyer.Affiliates.Schemas.{Attribution}
+  alias WebsFlyer.Affiliates.Schemas.{Attribution, UserAttribution}
   import Ecto.Query, only: [from: 2]
   require Logger
   @doc """
@@ -46,7 +46,6 @@ defmodule WebsFlyer.Affiliates.Attributions do
   """
 
   def create_attribution(%{"event" => "click"} = attrs) do
-
     case basic_attribution(attrs) do
       {:ok, click_attribution} -> 
         {:ok, user_attribution} = UserAttributions.create_user_attribution(%{
@@ -61,8 +60,22 @@ defmodule WebsFlyer.Affiliates.Attributions do
       {:error, changeset} ->
         {:error, changeset}
     end
+  end
 
-
+  def create_attribution(%{"event" => "login"} = attrs) do
+    case basic_attribution(attrs) do
+      {:ok, login_attribution} -> 
+        user_attribution = UserAttributions.get_by_user_cookie(login_attribution.user_cookie)
+        case user_attribution do
+          nil -> 
+            nil
+          %UserAttribution{} = user_attribution ->
+            UserAttributions.update_user_attribution(user_attribution, %{user_id: login_attribution.user_id})
+        end
+        {:ok, login_attribution}
+      {:error, changeset} ->
+        {:error, changeset}
+    end
   end
 
   def create_attribution(attrs) do

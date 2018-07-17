@@ -147,6 +147,14 @@ defmodule WebsFlyer.TestData do
    }
   end
 
+  def login_shopback_attrs do
+    %{
+      "event" => "login",
+      "user_cookie" => "randomshopbackusercookie",
+      "user_id" => 1234
+     }
+  end
+
   def login_attrs do 
     %{
     "event" => "login",

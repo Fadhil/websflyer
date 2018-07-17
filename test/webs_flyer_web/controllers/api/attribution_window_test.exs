@@ -30,6 +30,20 @@ defmodule WebsFlyerWeb.AttributionWindowTest do
       assert user_attribution.attributed_to == "shopback"
       assert not is_nil(user_attribution.attribution_start_timestamp)
     end
+  end
+
+  describe "login event occurs" do
+    test "when a user_attribution with the user_cookie exists, the user_attribution is updated with the user_id" do
+      assert {:ok, media_source} = MediaSources.create_media_source(TestData.shopback_media_source)
+      assert media_source.aff_name == "shopback"
+      assert {:ok, _click_attribution} = Attributions.create_attribution(TestData.click_shopback_attrs)
+      assert %UserAttribution{} = user_attribution = UserAttributions.get_by_user_cookie("randomshopbackusercookie")
+      assert user_attribution.user_id == nil
+      assert {:ok, login_attribution} = Attributions.create_attribution(TestData.login_shopback_attrs)
+      assert %UserAttribution{} = user_attribution = UserAttributions.get_by_user_cookie("randomshopbackusercookie")
+      assert user_attribution.user_id == 1234
+    end
+  end
     # test "within a clicks attribution window creates a login entry attributed to that affiliate", %{conn: conn} do
     #   {:ok, media_source} = Affiliates.create_media_source(@shopback_media_source)
     #   {:ok, click_attribution} = Affiliates.create_attribution(@click_shopback_attrs)
@@ -45,5 +59,4 @@ defmodule WebsFlyerWeb.AttributionWindowTest do
 
     #   assert login_attribution.attributed_to() == "shopback"
     # end
-  end
 end
