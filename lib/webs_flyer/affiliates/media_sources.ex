@@ -36,13 +36,14 @@ defmodule WebsFlyer.Affiliates.MediaSources do
   end
 
   def get_media_source_by_name(name) do
+    name = String.downcase(name)
+
     q =
       from(
         m in MediaSource,
-        where: m.aff_name == ^name,
+        where: fragment("lower(?)", m.aff_name) == ^name,
         order_by: [desc: m.inserted_at]
       )
-
     Repo.all(q)
     |> List.first()
   end

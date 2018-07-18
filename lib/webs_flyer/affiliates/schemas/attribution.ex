@@ -9,13 +9,13 @@ defmodule WebsFlyer.Affiliates.Schemas.Attribution do
     field(:aff_name, :string)
     field(:event, :string)
     field(:attributed_to, :string)
-    field(:rs_id, :integer)
+    field(:rs_id, :id)
     field(:s2s_post_params, :string)
     field(:status, :string)
     field(:transaction_id, :string)
     field(:url_params, :string)
     field(:user_cookie, :string)
-    field(:user_id, :integer)
+    field(:user_id, :id)
 
     timestamps()
   end

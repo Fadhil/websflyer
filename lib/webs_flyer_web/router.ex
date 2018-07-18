@@ -5,6 +5,17 @@ defmodule WebsFlyerWeb.Router do
     plug(:accepts, ["json"])
   end
 
+  pipeline :browser do
+    plug :fetch_session
+    plug :put_secure_browser_headers
+  end
+
+  scope "/", WebsFlyerWeb do
+    pipe_through(:browser)
+    get "/track.gif", TrackingController, :track
+    get "/tracker.js", TrackingController, :tracker
+  end
+
   scope "/api", WebsFlyerWeb.API do
     pipe_through(:api)
 

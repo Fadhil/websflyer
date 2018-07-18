@@ -62,6 +62,7 @@ defmodule WebsFlyer.Affiliates.Attributions do
               })
             ua ->
               {:ok, _user_attribution} = UserAttributions.update_user_attribution(ua, %{
+                "user_id" => click_attribution.user_id,
                 "attributed_to" => click_attribution.aff_name,
                 "attribution_start_timestamp" => get_timestamp(click_attribution.inserted_at),
                 "attribution_window_in_seconds" =>
