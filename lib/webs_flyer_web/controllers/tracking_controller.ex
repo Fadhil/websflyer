@@ -49,7 +49,7 @@ defmodule WebsFlyerWeb.TrackingController do
         nil
       {user_cookie, user_id, url_params, rs_id} when not is_nil(user_cookie) and not is_nil(url_params) and not is_nil(user_id) ->
         Attributions.create_attribution(%{
-          "user_id" => user_id,  
+          "user_id" => user_id,
           "user_cookie" => user_cookie,
           "url_params" => url_params,
           "event" => "click"
@@ -74,13 +74,14 @@ defmodule WebsFlyerWeb.TrackingController do
         })
       _ ->
         nil
-    end 
+    end
 
     conn
   end
 
   defp should_track?(conn) do
-    Map.get(conn.private.url_params, "utm_source") not in ["", nil]
+    Map.get(conn.private.url_params, "utm_source") not in ["", nil] ||
+      Map.get(conn.params, "user_id") not in ["", nil]
   end
 
   defp serialize_url_params(conn, _opts) do
