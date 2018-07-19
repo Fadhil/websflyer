@@ -44,9 +44,9 @@ defmodule WebsFlyerWeb.TrackingController do
     user_id = Map.get(conn.params, "user_id")
     url_params = Map.get(conn.params, "url_params")
     rs_id = Map.get(conn.params, "rs_id")
-    case {user_cookie, user_id, url_params, rs_id} do
+    conn = case {user_cookie, user_id, url_params, rs_id} do
       {nil, nil, nil, nil} ->
-        nil
+        conn
       {user_cookie, user_id, url_params, rs_id} when not is_nil(user_cookie) and not is_nil(url_params) and not is_nil(user_id) ->
         Attributions.create_attribution(%{
           "user_id" => user_id,
@@ -54,36 +54,49 @@ defmodule WebsFlyerWeb.TrackingController do
           "url_params" => url_params,
           "event" => "click"
         })
+
+        put_resp_cookie(conn, "_websflyer_u", :crypto.hash(:md5, user_id))
+
       {user_cookie, user_id, url_params, rs_id} when not is_nil(user_cookie) and not is_nil(url_params) ->
         Attributions.create_attribution(%{
           "user_cookie" => user_cookie,
           "url_params" => url_params,
           "event" => "click"
         })
+        conn
       {user_cookie, user_id, nil, nil} when not is_nil(user_cookie) and not is_nil(user_id)->
         Attributions.create_attribution(%{
           "user_cookie" => user_cookie,
           "user_id" => user_id,
           "event" => "login"
         })
+        conn
       {nil, user_id, nil, rs_id} when not is_nil(user_id) and not is_nil(rs_id) ->
         Attributions.create_attribution(%{
           "user_id" => user_id,
           "rs_id" => rs_id,
           "event" => "transaction"
         })
+        conn
       _ ->
-        nil
+        conn
     end
 
     conn
   end
 
   defp should_track?(conn) do
-    Map.get(conn.private.url_params, "utm_source") not in ["", nil] ||
-      Map.get(conn.params, "user_id") not in ["", nil]
+    utm_source = Map.get(conn.private.url_params, "utm_source")
+    user_id = Map.get(conn.params, "user_id")
+    user_ident_cookie = Map.get(conn.cookies, "_websflyer_u")
+
+    utm_source not in ["", nil] ||
+      (user_id not in ["", nil] && (is_nil(user_ident_cookie) || is_changed?(user_ident_cookie, user_id )))
   end
 
+  defp is_changed?(md5hash, id) do
+    :crypto.hash(:md5, id) != md5hash
+  end
   defp serialize_url_params(conn, _opts) do
     url_params = String.trim_leading(Map.get(conn.params, "url_params", ""), "?")
     put_private(conn, :url_params, URI.decode_query(url_params))

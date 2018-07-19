@@ -2,7 +2,7 @@ defmodule WebsFlyerWeb.TrackingControllerTest do
   use WebsFlyerWeb.ConnCase
 
   alias WebsFlyer.Affiliates.Schemas.{Attribution, UserAttribution}
-  alias WebsFlyer.Affiliates.{Attributions, MediaSources, UserAttributions}
+  alias WebsFlyer.Affiliates.{Attributions, MediaSources}
   alias WebsFlyer.TestData
   alias WebsFlyer.Repo
 
@@ -27,6 +27,40 @@ defmodule WebsFlyerWeb.TrackingControllerTest do
       new_last_user_attribution = UserAttribution |> Repo.all |> List.last
       assert new_last_user_attribution.id == last_user_attribution.id
       assert not is_nil(new_last_user_attribution.user_id)
+
+    end
+
+    test "when user_attribution with a user_id exists, and a new request with the same user_id is made it shouldn't create a new attribution", %{conn: conn} do
+      Attribution |> Repo.delete_all
+      assert Enum.count(Attributions.list_attributions) == 0
+
+      conn = get(conn, tracking_path(conn, :track, url_params: "?utm_source=shopback", user_id: 3))
+      assert response(conn, 200)
+      assert Enum.count(Attributions.list_attributions) == 1
+      last_attribution = Attribution |> Repo.all |> List.last
+      assert last_attribution.user_id == 3
+
+      conn = get(conn, tracking_path(conn, :track, user_id: 3))
+      assert response(conn, 200)
+      assert Enum.count(Attributions.list_attributions) == 1
+    end
+
+    test "when user_attribution with a user_id exists, and a new request with an updated user_id is made it should create a new attribution", %{conn: conn} do
+      Attribution |> Repo.delete_all
+      assert Enum.count(Attributions.list_attributions) == 0
+
+      conn = get(conn, tracking_path(conn, :track, url_params: "?utm_source=shopback", user_id: 3))
+      assert response(conn, 200)
+      assert Enum.count(Attributions.list_attributions) == 1
+      last_attribution = Attribution |> Repo.all |> List.last
+      assert last_attribution.user_id == 3
+
+      conn = get(conn, tracking_path(conn, :track, user_id: 4))
+      assert response(conn, 200)
+      assert Enum.count(Attributions.list_attributions) == 2
+    end
+
+    test "when user_attribution with a user_id exists, and a new request with  the same user_id is made it shouldn't update the user_attribution" do
 
     end
   end
