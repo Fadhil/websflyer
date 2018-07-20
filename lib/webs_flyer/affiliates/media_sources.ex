@@ -11,7 +11,7 @@ defmodule WebsFlyer.Affiliates.MediaSources do
   import Ecto.Query, warn: false
   alias WebsFlyer.Repo
 
-  alias WebsFlyer.Affiliates.Schemas.{Attribution, MediaSource}
+  alias WebsFlyer.Affiliates.Schemas.{MediaSource}
 
   @doc """
   Returns the list of media_sources.

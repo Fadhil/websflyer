@@ -1,9 +1,6 @@
 defmodule WebsFlyer.Affiliates.Schemas.Attribution do
   use Ecto.Schema
   import Ecto.Changeset
-  import Ecto.Query, only: [from: 2]
-
-  alias WebsFlyer.Repo
 
   schema "attributions" do
     field(:aff_name, :string)

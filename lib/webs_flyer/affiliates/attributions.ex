@@ -48,11 +48,11 @@ defmodule WebsFlyer.Affiliates.Attributions do
 
   def create_attribution(%{"event" => "click"} = attrs) do
     case basic_attribution(attrs) do
-      {:ok, click_attribution} -> 
-        {:ok, user_attribution} = 
+      {:ok, click_attribution} ->
+        {:ok, user_attribution} =
           case UserAttributions.get_by_user_cookie(click_attribution.user_cookie) do
             nil ->
-              {:ok, user_attribution} = UserAttributions.create_user_attribution(%{
+              {:ok, _user_attribution} = UserAttributions.create_user_attribution(%{
                 "user_cookie" => click_attribution.user_cookie,
                 "user_id" => click_attribution.user_id,
                 "attributed_to" => click_attribution.aff_name,
@@ -66,7 +66,7 @@ defmodule WebsFlyer.Affiliates.Attributions do
                 "attributed_to" => click_attribution.aff_name,
                 "attribution_start_timestamp" => get_timestamp(click_attribution.inserted_at),
                 "attribution_window_in_seconds" =>
-                  MediaSources.get_attribution_window(click_attribution.aff_name) 
+                  MediaSources.get_attribution_window(click_attribution.aff_name)
               })
           end
 
@@ -78,10 +78,10 @@ defmodule WebsFlyer.Affiliates.Attributions do
 
   def create_attribution(%{"event" => "login"} = attrs) do
     case basic_attribution(attrs) do
-      {:ok, login_attribution} -> 
+      {:ok, login_attribution} ->
         user_attribution = UserAttributions.get_by_user_cookie(login_attribution.user_cookie)
         case user_attribution do
-          nil -> 
+          nil ->
             UserAttributions.create_user_attribution(%{
               "user_cookie" => login_attribution.user_cookie,
               "user_id" => login_attribution.user_id,

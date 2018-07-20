@@ -47,7 +47,7 @@ defmodule WebsFlyerWeb.TrackingController do
     conn = case {user_cookie, user_id, url_params, rs_id} do
       {nil, nil, nil, nil} ->
         conn
-      {user_cookie, user_id, url_params, rs_id} when not is_nil(user_cookie) and not is_nil(url_params) and not is_nil(user_id) ->
+      {user_cookie, user_id, url_params, _rs_id} when not is_nil(user_cookie) and not is_nil(url_params) and not is_nil(user_id) ->
         Attributions.create_attribution(%{
           "user_id" => user_id,
           "user_cookie" => user_cookie,
@@ -57,7 +57,7 @@ defmodule WebsFlyerWeb.TrackingController do
 
         put_resp_cookie(conn, "_websflyer_u", :crypto.hash(:md5, user_id))
 
-      {user_cookie, user_id, url_params, rs_id} when not is_nil(user_cookie) and not is_nil(url_params) ->
+      {user_cookie, _user_id, url_params, _rs_id} when not is_nil(user_cookie) and not is_nil(url_params) ->
         Attributions.create_attribution(%{
           "user_cookie" => user_cookie,
           "url_params" => url_params,

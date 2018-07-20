@@ -17,7 +17,7 @@ defmodule WebsFlyerWeb.API.AttributionController do
       render_attribution(conn, attribution)
     else
       result ->
-        with {:ok, [%Attribution{}, %UserAttribution{}] = [attribution, user_attribution]} <- result do
+        with {:ok, [%Attribution{}, %UserAttribution{}] = [attribution, _user_attribution]} <- result do
           render_attribution(conn, attribution)
         end
     end
