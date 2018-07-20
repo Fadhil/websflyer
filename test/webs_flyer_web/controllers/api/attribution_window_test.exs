@@ -73,7 +73,7 @@ defmodule WebsFlyerWeb.AttributionWindowTest do
       assert {:ok, media_source} = MediaSources.create_media_source(TestData.shopback_media_source)
       assert media_source.aff_name == "shopback"
       assert nil == UserAttributions.get_by_user_cookie("random1234usercookie")
-       
+
       assert {:ok, _login_attribution} = Attributions.create_attribution(TestData.login_user_1234_attrs)
       assert %UserAttribution{} = user_attribution = UserAttributions.get_by_user_cookie("random1234usercookie")
       assert user_attribution.user_id == 1234
@@ -110,7 +110,7 @@ defmodule WebsFlyerWeb.AttributionWindowTest do
       assert %UserAttribution{} = user_attribution = UserAttributions.get_by_user_cookie("random1234usercookie")
       assert user_attribution.user_id == 1234
 
-      assert {:error, %Ecto.Changeset{}} = Attributions.create_attribution(TestData.transaction_user_1234_attrs)
+      assert {:ok, %{}} = Attributions.create_attribution(TestData.transaction_user_1234_attrs)
     end
   end
 end

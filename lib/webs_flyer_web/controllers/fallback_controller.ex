@@ -17,4 +17,10 @@ defmodule WebsFlyerWeb.FallbackController do
     |> put_status(:not_found)
     |> render(WebsFlyerWeb.ErrorView, :"404")
   end
+
+  def call(conn, {:ok, %{}}) do
+    conn
+    |> put_status(:ok)
+    |> json(%{})
+  end
 end

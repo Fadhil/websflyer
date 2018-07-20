@@ -99,22 +99,18 @@ defmodule WebsFlyer.Affiliates.Attributions do
     end
   end
 
-  def create_attribution(%{"event" => "transaction", "user_id" => user_id} = attrs) do
+  def create_attribution(%{"event" => "transaction", "user_id" => user_id, "rs_id" => _rs_id} = attrs) do
     user_attribution = UserAttributions.get_by_user_id(user_id)
     case user_attribution do
       nil ->
-        cs = basic_changeset(attrs)
-        |> add_error(:event, "User attribution not found")
-        {:error, cs}
+        {:ok, %{}}
       ua ->
         case UserAttributions.within_attribution_window(ua, timestamp_now()) do
           true ->
             attrs = Map.put(attrs, "aff_name", ua.attributed_to)
             basic_attribution(attrs)
           false ->
-            cs = basic_changeset(attrs)
-            |> add_error(:event, "This transaction occurred outside of the attribution window")
-            {:error, cs}
+            {:ok, %{}}
         end
     end
   end

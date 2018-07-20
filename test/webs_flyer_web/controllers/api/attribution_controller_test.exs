@@ -1,9 +1,10 @@
 defmodule WebsFlyerWeb.API.AttributionControllerTest do
   use WebsFlyerWeb.ConnCase
 
-  alias WebsFlyer.Affiliates.Schemas.{Attribution}
-  alias WebsFlyer.Affiliates.{Attributions, MediaSources}  
+  alias WebsFlyer.Affiliates.Schemas.{Attribution, UserAttribution}
+  alias WebsFlyer.Affiliates.{Attributions, MediaSources, UserAttributions}
   alias WebsFlyer.TestData
+  alias WebsFlyer.Repo
 
   def fixture(:attribution) do
     {:ok, [attribution, _user_attribution]} = Attributions.create_attribution(TestData.create_attrs)
@@ -14,7 +15,7 @@ defmodule WebsFlyerWeb.API.AttributionControllerTest do
     {:ok, _media_source} = MediaSources.create_media_source(TestData.shopback_media_source)
     {:ok, _click_attribution} = Attributions.create_attribution(TestData.click_shopback_attrs)
     {:ok, _login_attribution} = Attributions.create_attribution(TestData.login_user_1234_attrs)
-    
+
     {:ok, conn: put_req_header(conn, "accept", "application/json")}
   end
 
@@ -76,9 +77,16 @@ defmodule WebsFlyerWeb.API.AttributionControllerTest do
 
   describe "create transaction attribution" do
 
-    test "with valid details renders transaction attribution", %{conn: conn} do
-      post(conn, api_attribution_path(conn, :create), attribution: TestData.transaction_user_1234_attrs)
-      assert %{"event" => "transaction", "user_cookie" => "randomusercookie", "user_id" => 1234}
+    test "with valid details when a user_attribution with the user_id exists renders transaction attribution ", %{conn: conn} do
+      assert {:ok, %UserAttribution{} =  _user_attribution} = UserAttributions.create_user_attribution(TestData.click_now_user_attribution)
+      conn = post(conn, api_attribution_path(conn, :create), attribution: TestData.transaction_user_1234_attrs)
+      assert json_response(conn, 201)["data"] != %{}
+    end
+
+    test "with valid details when user_attribution with the user_id does not exist", %{conn: conn} do
+      UserAttribution |> Repo.delete_all
+      conn = post(conn, api_attribution_path(conn, :create), attribution: TestData.transaction_user_1234_attrs)
+      assert json_response(conn, 200)
     end
 
     test "with user_id but rs_id is nil renders a 422 error", %{conn: conn} do
