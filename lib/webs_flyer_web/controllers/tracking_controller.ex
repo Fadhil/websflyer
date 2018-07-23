@@ -55,7 +55,8 @@ defmodule WebsFlyerWeb.TrackingController do
           "event" => "click"
         })
 
-        put_resp_cookie(conn, "_websflyer_u", :crypto.hash(:md5, user_id))
+        md5_uid = Base.encode16(:crypto.hash(:md5, user_id))
+        put_resp_cookie(conn, "_websflyer_u", md5_uid)
 
       {user_cookie, _user_id, url_params, _rs_id} when not is_nil(user_cookie) and not is_nil(url_params) ->
         Attributions.create_attribution(%{
@@ -70,7 +71,10 @@ defmodule WebsFlyerWeb.TrackingController do
           "user_id" => user_id,
           "event" => "login"
         })
-        conn
+
+        md5_uid = Base.encode16(:crypto.hash(:md5, user_id))
+        put_resp_cookie(conn, "_websflyer_u", md5_uid)
+
       {nil, user_id, nil, rs_id} when not is_nil(user_id) and not is_nil(rs_id) ->
         Attributions.create_attribution(%{
           "user_id" => user_id,
@@ -95,7 +99,7 @@ defmodule WebsFlyerWeb.TrackingController do
   end
 
   defp is_changed?(md5hash, id) do
-    :crypto.hash(:md5, id) != md5hash
+    Base.encode16(:crypto.hash(:md5, id)) != md5hash
   end
   defp serialize_url_params(conn, _opts) do
     url_params = String.trim_leading(Map.get(conn.params, "url_params", ""), "?")
