@@ -1,4 +1,4 @@
-defmodule WebsFlyer.Repo.Migrations.CreateAttributions do
+defmodule Websflyer.Repo.Migrations.CreateAttributions do
   use Ecto.Migration
 
   def change do

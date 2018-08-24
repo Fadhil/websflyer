@@ -1,4 +1,4 @@
-defmodule WebsFlyer.TestData do
+defmodule Websflyer.TestData do
   def anonymous_click_attrs do
     %{
       "url_params" => "?utm_source=some_affiliate",
@@ -131,28 +131,28 @@ defmodule WebsFlyer.TestData do
     %{aff_name: nil, attribution_window_in_seconds: nil, do_postback: nil, name: nil}
   end
 
-  def shopback_media_source do 
+  def shopback_media_source do
     %{
-    "aff_name" => "shopback",
-    "name" => "Shopback People",
-    "attribution_window_in_seconds" => 24 * 60 * 60
-   }
+      "aff_name" => "shopback",
+      "name" => "Shopback People",
+      "attribution_window_in_seconds" => 24 * 60 * 60
+    }
   end
 
-  def carousell_media_source do 
+  def carousell_media_source do
     %{
-    "aff_name" => "carousell",
-    "name" => "Carousell People",
-    "attribution_window_in_seconds" => 48 * 60 * 60
-   }
+      "aff_name" => "carousell",
+      "name" => "Carousell People",
+      "attribution_window_in_seconds" => 48 * 60 * 60
+    }
   end
 
-  def click_shopback_attrs do 
+  def click_shopback_attrs do
     %{
-    "event" => "click",
-    "url_params" => "?utm_source=shopback&utm_medium=Affiliate",
-    "user_cookie" => "random1234usercookie"
-   }
+      "event" => "click",
+      "url_params" => "?utm_source=shopback&utm_medium=Affiliate",
+      "user_cookie" => "random1234usercookie"
+    }
   end
 
   def click_carousell_attrs do
@@ -160,7 +160,7 @@ defmodule WebsFlyer.TestData do
       "event" => "click",
       "url_params" => "?utm_source=carousell&utm_medium=Affiliate",
       "user_cookie" => "random1234usercookie"
-     }    
+    }
   end
 
   def login_user_1234_attrs do
@@ -168,15 +168,15 @@ defmodule WebsFlyer.TestData do
       "event" => "login",
       "user_cookie" => "random1234usercookie",
       "user_id" => 1234
-     }
+    }
   end
 
-  def login_attrs do 
+  def login_attrs do
     %{
-    "event" => "login",
-    "user_id" => 3,
-    "user_cookie" => "random1234usercookie"
-   }
+      "event" => "login",
+      "user_id" => 3,
+      "user_cookie" => "random1234usercookie"
+    }
   end
 
   def transaction_user_1234_attrs do
@@ -191,7 +191,8 @@ defmodule WebsFlyer.TestData do
     %{
       "user_cookie" => "randome_user_cookie",
       "attributed_to" => "shopback",
-      "attribution_start_timestamp" => DateTime.to_unix(DateTime.from_naive!(NaiveDateTime.utc_now, "Etc/UTC")),
+      "attribution_start_timestamp" =>
+        DateTime.to_unix(DateTime.from_naive!(NaiveDateTime.utc_now(), "Etc/UTC")),
       "attribution_window_in_seconds" => 86400
     }
   end
@@ -200,7 +201,8 @@ defmodule WebsFlyer.TestData do
     %{
       "user_cookie" => "random_user_cookie",
       "attributed_to" => "shopback",
-      "attribution_start_timestamp" => (DateTime.to_unix(DateTime.from_naive!(NaiveDateTime.utc_now, "Etc/UTC")) - 90000),
+      "attribution_start_timestamp" =>
+        DateTime.to_unix(DateTime.from_naive!(NaiveDateTime.utc_now(), "Etc/UTC")) - 90000,
       "attribution_window_in_seconds" => 86400
     }
   end

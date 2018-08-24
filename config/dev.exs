@@ -6,13 +6,19 @@ use Mix.Config
 # The watchers configuration can be used to run external
 # watchers to your application. For example, we use it
 # with brunch.io to recompile .js and .css sources.
-config :webs_flyer, WebsFlyerWeb.Endpoint,
+config :websflyer, WebsflyerWeb.Endpoint,
   http: [port: 4000],
   debug_errors: true,
   code_reloader: true,
   check_origin: false,
-  watchers: [node: ["node_modules/brunch/bin/brunch", "watch", "--stdin",
-                    cd: Path.expand("../assets", __DIR__)]]
+  watchers: [
+    node: [
+      "node_modules/brunch/bin/brunch",
+      "watch",
+      "--stdin",
+      cd: Path.expand("../assets", __DIR__)
+    ]
+  ]
 
 # ## SSL Support
 #
@@ -38,10 +44,10 @@ config :logger, :console, format: "[$level] $message\n"
 config :phoenix, :stacktrace_depth, 20
 
 # Configure your database
-config :webs_flyer, WebsFlyer.Repo,
+config :websflyer, Websflyer.Repo,
   adapter: Ecto.Adapters.Postgres,
   username: "postgres",
   password: "postgres",
-  database: "webs_flyer_dev",
+  database: "websflyer_dev",
   hostname: "localhost",
   pool_size: 10

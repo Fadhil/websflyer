@@ -1,0 +1,36 @@
+function Websflyer(options) {
+  this.user_id = options.user_id;
+  this.appendTrackingPixel();
+}
+
+Websflyer.prototype.appendTrackingPixel = function() {
+  if (!Websflyer.pixel) {
+    var pixelSrc = Websflyer.BASE_TRACKING_URL + '?' + 'url_params=' + encodeURIComponent(document.location.search.substring(1));
+
+    if (this.user_id) {
+      pixelSrc += '&user_id=' + encodeURIComponent(this.user_id);
+    }
+
+    var pixelEl = document.createElement('img');
+
+    pixelEl.id = Websflyer.PIXEL_ID;
+
+    pixelEl.src = pixelSrc;
+
+    document.body.appendChild(pixelEl);
+  }
+}
+
+Websflyer.init = function(options) {
+  return new Websflyer(options)
+}
+
+Object.defineProperty(Websflyer, 'pixel', {
+  get: function() {
+    return document.getElementById(Websflyer.PIXEL_ID);
+  }
+});
+
+Websflyer.PIXEL_ID = 'websflyer-pixel-tracker';
+
+Websflyer.BASE_TRACKING_URL = '<%= tracking_url(@conn, :track) %>';

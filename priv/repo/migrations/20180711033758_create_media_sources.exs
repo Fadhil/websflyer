@@ -1,4 +1,4 @@
-defmodule WebsFlyer.Repo.Migrations.CreateMediaSources do
+defmodule Websflyer.Repo.Migrations.CreateMediaSources do
   use Ecto.Migration
 
   def change do

@@ -1,4 +1,4 @@
-defmodule WebsFlyerWeb.ChannelCase do
+defmodule WebsflyerWeb.ChannelCase do
   @moduledoc """
   This module defines the test case to be used by
   channel tests.
@@ -21,15 +21,15 @@ defmodule WebsFlyerWeb.ChannelCase do
       use Phoenix.ChannelTest
 
       # The default endpoint for testing
-      @endpoint WebsFlyerWeb.Endpoint
+      @endpoint WebsflyerWeb.Endpoint
     end
   end
 
   setup tags do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(WebsFlyer.Repo)
+    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Websflyer.Repo)
 
     unless tags[:async] do
-      Ecto.Adapters.SQL.Sandbox.mode(WebsFlyer.Repo, {:shared, self()})
+      Ecto.Adapters.SQL.Sandbox.mode(Websflyer.Repo, {:shared, self()})
     end
 
     :ok

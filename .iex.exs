@@ -1,4 +1,4 @@
-alias WebsFlyer.Affiliates
-alias WebsFlyer.Repo
-alias WebsFlyer.Affiliates.{Attributions, MediaSources, UserAttributions}
-alias WebsFlyer.Affiliates.Schemas.{Attribution, MediaSource, UserAttribution}
+alias Websflyer.Affiliates
+alias Websflyer.Repo
+alias Websflyer.Affiliates.{Attributions, MediaSources, UserAttributions}
+alias Websflyer.Affiliates.Schemas.{Attribution, MediaSource, UserAttribution}

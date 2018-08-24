@@ -1,4 +1,3 @@
 ExUnit.start()
 
-Ecto.Adapters.SQL.Sandbox.mode(WebsFlyer.Repo, :manual)
-
+Ecto.Adapters.SQL.Sandbox.mode(Websflyer.Repo, :manual)

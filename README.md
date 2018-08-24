@@ -1,4 +1,4 @@
-# WebsFlyer
+# Websflyer
 
 To start your Phoenix server:
 

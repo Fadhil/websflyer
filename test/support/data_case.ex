@@ -1,4 +1,4 @@
-defmodule WebsFlyer.DataCase do
+defmodule Websflyer.DataCase do
   @moduledoc """
   This module defines the setup for tests requiring
   access to the application's data layer.
@@ -16,20 +16,20 @@ defmodule WebsFlyer.DataCase do
 
   using do
     quote do
-      alias WebsFlyer.Repo
+      alias Websflyer.Repo
 
       import Ecto
       import Ecto.Changeset
       import Ecto.Query
-      import WebsFlyer.DataCase
+      import Websflyer.DataCase
     end
   end
 
   setup tags do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(WebsFlyer.Repo)
+    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Websflyer.Repo)
 
     unless tags[:async] do
-      Ecto.Adapters.SQL.Sandbox.mode(WebsFlyer.Repo, {:shared, self()})
+      Ecto.Adapters.SQL.Sandbox.mode(Websflyer.Repo, {:shared, self()})
     end
 
     :ok
