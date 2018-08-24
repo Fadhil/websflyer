@@ -17,13 +17,13 @@ defmodule WebsflyerWeb.TrackingControllerTest do
   describe "tracker" do
     test "when user_attribution with a user_cookie is set, and user_id is sent in params, the user_attribution is updated with the user_id",
          %{conn: conn} do
-      conn = get(conn, tracking_path(conn, :track, url_params: "?utm_source=shopback"))
+      conn = get(conn, Routes.tracking_path(conn, :track, url_params: "?utm_source=shopback"))
       assert response(conn, 200)
       last_user_attribution = UserAttribution |> Repo.all() |> List.last()
       assert %UserAttribution{} = user_attribution = last_user_attribution
       assert not is_nil(user_attribution.user_cookie)
 
-      conn = get(conn, tracking_path(conn, :track, user_id: 3))
+      conn = get(conn, Routes.tracking_path(conn, :track, user_id: 3))
       assert response(conn, 200)
       new_last_user_attribution = UserAttribution |> Repo.all() |> List.last()
       assert new_last_user_attribution.id == last_user_attribution.id
@@ -36,14 +36,14 @@ defmodule WebsflyerWeb.TrackingControllerTest do
       assert Enum.count(Attributions.list_attributions()) == 0
 
       conn =
-        get(conn, tracking_path(conn, :track, url_params: "?utm_source=shopback", user_id: 3))
+        get(conn, Routes.tracking_path(conn, :track, url_params: "?utm_source=shopback", user_id: 3))
 
       assert response(conn, 200)
       assert Enum.count(Attributions.list_attributions()) == 1
       last_attribution = Attribution |> Repo.all() |> List.last()
       assert last_attribution.user_id == 3
 
-      conn = get(conn, tracking_path(conn, :track, user_id: 3))
+      conn = get(conn, Routes.tracking_path(conn, :track, user_id: 3))
       assert response(conn, 200)
       assert Enum.count(Attributions.list_attributions()) == 1
     end
@@ -54,14 +54,14 @@ defmodule WebsflyerWeb.TrackingControllerTest do
       assert Enum.count(Attributions.list_attributions()) == 0
 
       conn =
-        get(conn, tracking_path(conn, :track, url_params: "?utm_source=shopback", user_id: 3))
+        get(conn, Routes.tracking_path(conn, :track, url_params: "?utm_source=shopback", user_id: 3))
 
       assert response(conn, 200)
       assert Enum.count(Attributions.list_attributions()) == 1
       last_attribution = Attribution |> Repo.all() |> List.last()
       assert last_attribution.user_id == 3
 
-      conn = get(conn, tracking_path(conn, :track, user_id: 4))
+      conn = get(conn, Routes.tracking_path(conn, :track, user_id: 4))
       assert response(conn, 200)
       assert Enum.count(Attributions.list_attributions()) == 2
     end

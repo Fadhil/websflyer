@@ -16,7 +16,7 @@ defmodule WebsflyerWeb.API.UserAttributionController do
            Affiliates.UserAttributions.create_user_attribution(user_attribution_params) do
       conn
       |> put_status(:created)
-      |> put_resp_header("location", api_user_attribution_path(conn, :show, user_attribution))
+      |> put_resp_header("location", Routes.api_user_attribution_path(conn, :show, user_attribution))
       |> render("show.json", user_attribution: user_attribution)
     end
   end

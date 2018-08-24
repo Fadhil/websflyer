@@ -23,7 +23,7 @@ defmodule WebsflyerWeb.API.AttributionControllerTest do
 
   describe "index" do
     test "lists all attributions", %{conn: conn} do
-      conn = get(conn, api_attribution_path(conn, :index))
+      conn = get(conn, Routes.api_attribution_path(conn, :index))
       assert [_head | _tail] = json_response(conn, 200)["data"]
     end
   end
@@ -32,7 +32,7 @@ defmodule WebsflyerWeb.API.AttributionControllerTest do
     test "with url_params and user_cookie and user_id is nil renders click attribution with valid details",
          %{conn: conn} do
       conn =
-        post(conn, api_attribution_path(conn, :create),
+        post(conn, Routes.api_attribution_path(conn, :create),
           attribution: TestData.anonymous_click_attrs()
         )
 
@@ -48,14 +48,14 @@ defmodule WebsflyerWeb.API.AttributionControllerTest do
 
     test "renders errors when data is invalid", %{conn: conn} do
       conn =
-        post(conn, api_attribution_path(conn, :create), attribution: TestData.invalid_attrs())
+        post(conn, Routes.api_attribution_path(conn, :create), attribution: TestData.invalid_attrs())
 
       assert json_response(conn, 422)["errors"] != %{}
     end
 
     test "with url_params but user_cookie is nil renders a 422 error", %{conn: conn} do
       conn =
-        post(conn, api_attribution_path(conn, :create),
+        post(conn, Routes.api_attribution_path(conn, :create),
           attribution: TestData.invalid_click_attrs()
         )
 
@@ -64,7 +64,7 @@ defmodule WebsflyerWeb.API.AttributionControllerTest do
 
     test "with user_cookie but url_params and user_id is nil renders a 422 error", %{conn: conn} do
       conn =
-        post(conn, api_attribution_path(conn, :create),
+        post(conn, Routes.api_attribution_path(conn, :create),
           attribution: TestData.invalid_click_attrs2()
         )
 
@@ -74,13 +74,13 @@ defmodule WebsflyerWeb.API.AttributionControllerTest do
 
   describe "create login attribution" do
     test "with valid details renders login attribution", %{conn: conn} do
-      post(conn, api_attribution_path(conn, :create), attribution: TestData.valid_login_attrs())
+      post(conn, Routes.api_attribution_path(conn, :create), attribution: TestData.valid_login_attrs())
       assert %{"event" => "login", "user_cookie" => "randomusercookie", "user_id" => 3}
     end
 
     test "with url_params but user_cookie is nil renders a 422 error", %{conn: conn} do
       conn =
-        post(conn, api_attribution_path(conn, :create),
+        post(conn, Routes.api_attribution_path(conn, :create),
           attribution: TestData.invalid_login_without_user_cookie_attrs()
         )
 
@@ -89,7 +89,7 @@ defmodule WebsflyerWeb.API.AttributionControllerTest do
 
     test "with user_cookie but url_params and user_id is nil renders a 422 error", %{conn: conn} do
       conn =
-        post(conn, api_attribution_path(conn, :create),
+        post(conn, Routes.api_attribution_path(conn, :create),
           attribution: TestData.invalid_login_without_user_id_attrs()
         )
 
@@ -104,7 +104,7 @@ defmodule WebsflyerWeb.API.AttributionControllerTest do
                UserAttributions.create_user_attribution(TestData.click_now_user_attribution())
 
       conn =
-        post(conn, api_attribution_path(conn, :create),
+        post(conn, Routes.api_attribution_path(conn, :create),
           attribution: TestData.transaction_user_1234_attrs()
         )
 
@@ -115,7 +115,7 @@ defmodule WebsflyerWeb.API.AttributionControllerTest do
       UserAttribution |> Repo.delete_all()
 
       conn =
-        post(conn, api_attribution_path(conn, :create),
+        post(conn, Routes.api_attribution_path(conn, :create),
           attribution: TestData.transaction_user_1234_attrs()
         )
 
@@ -124,7 +124,7 @@ defmodule WebsflyerWeb.API.AttributionControllerTest do
 
     test "with user_id but rs_id is nil renders a 422 error", %{conn: conn} do
       conn =
-        post(conn, api_attribution_path(conn, :create),
+        post(conn, Routes.api_attribution_path(conn, :create),
           attribution: TestData.invalid_transaction_without_rs_id_attrs()
         )
 
@@ -133,7 +133,7 @@ defmodule WebsflyerWeb.API.AttributionControllerTest do
 
     test "with rs_id and user_id is nil renders a 422 error", %{conn: conn} do
       conn =
-        post(conn, api_attribution_path(conn, :create),
+        post(conn, Routes.api_attribution_path(conn, :create),
           attribution: TestData.invalid_transaction_without_user_id_attrs()
         )
 

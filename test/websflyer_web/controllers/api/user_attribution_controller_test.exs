@@ -37,17 +37,17 @@ defmodule WebsflyerWeb.API.UserAttributionControllerTest do
 
   describe "index" do
     test "lists all user_attributions", %{conn: conn} do
-      conn = get(conn, api_user_attribution_path(conn, :index))
+      conn = get(conn, Routes.api_user_attribution_path(conn, :index))
       assert json_response(conn, 200)["data"] == []
     end
   end
 
   describe "create user_attribution" do
     test "renders user_attribution when data is valid", %{conn: conn} do
-      conn = post(conn, api_user_attribution_path(conn, :create), user_attribution: @create_attrs)
+      conn = post(conn, Routes.api_user_attribution_path(conn, :create), user_attribution: @create_attrs)
       assert %{"id" => id} = json_response(conn, 201)["data"]
 
-      conn = get(conn, api_user_attribution_path(conn, :show, id))
+      conn = get(conn, Routes.api_user_attribution_path(conn, :show, id))
 
       assert json_response(conn, 200)["data"] == %{
                "id" => id,
@@ -61,7 +61,7 @@ defmodule WebsflyerWeb.API.UserAttributionControllerTest do
 
     test "renders errors when data is invalid", %{conn: conn} do
       conn =
-        post(conn, api_user_attribution_path(conn, :create), user_attribution: @invalid_attrs)
+        post(conn, Routes.api_user_attribution_path(conn, :create), user_attribution: @invalid_attrs)
 
       assert json_response(conn, 422)["errors"] != %{}
     end
@@ -75,13 +75,13 @@ defmodule WebsflyerWeb.API.UserAttributionControllerTest do
       user_attribution: %UserAttribution{id: id} = user_attribution
     } do
       conn =
-        put(conn, api_user_attribution_path(conn, :update, user_attribution),
+        put(conn, Routes.api_user_attribution_path(conn, :update, user_attribution),
           user_attribution: @update_attrs
         )
 
       assert %{"id" => ^id} = json_response(conn, 200)["data"]
 
-      conn = get(conn, api_user_attribution_path(conn, :show, id))
+      conn = get(conn, Routes.api_user_attribution_path(conn, :show, id))
 
       assert json_response(conn, 200)["data"] == %{
                "id" => id,
@@ -95,7 +95,7 @@ defmodule WebsflyerWeb.API.UserAttributionControllerTest do
 
     test "renders errors when data is invalid", %{conn: conn, user_attribution: user_attribution} do
       conn =
-        put(conn, api_user_attribution_path(conn, :update, user_attribution),
+        put(conn, Routes.api_user_attribution_path(conn, :update, user_attribution),
           user_attribution: @invalid_attrs
         )
 
@@ -107,11 +107,11 @@ defmodule WebsflyerWeb.API.UserAttributionControllerTest do
     setup [:create_user_attribution]
 
     test "deletes chosen user_attribution", %{conn: conn, user_attribution: user_attribution} do
-      conn = delete(conn, api_user_attribution_path(conn, :delete, user_attribution))
+      conn = delete(conn, Routes.api_user_attribution_path(conn, :delete, user_attribution))
       assert response(conn, 204)
 
       assert_error_sent(404, fn ->
-        get(conn, api_user_attribution_path(conn, :show, user_attribution))
+        get(conn, Routes.api_user_attribution_path(conn, :show, user_attribution))
       end)
     end
   end

@@ -19,7 +19,8 @@ defmodule WebsflyerWeb.ConnCase do
     quote do
       # Import conveniences for testing with connections
       use Phoenix.ConnTest
-      import WebsflyerWeb.Router.Helpers
+
+      alias WebsflyerWeb.Router.Helpers, as: Routes
 
       # The default endpoint for testing
       @endpoint WebsflyerWeb.Endpoint

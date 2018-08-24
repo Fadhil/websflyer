@@ -20,9 +20,11 @@ defmodule WebsflyerWeb do
   def controller do
     quote do
       use Phoenix.Controller, namespace: WebsflyerWeb
+
       import Plug.Conn
-      import WebsflyerWeb.Router.Helpers
       import WebsflyerWeb.Gettext
+
+      alias WebsflyerWeb.Router.Helpers, as: Routes
     end
   end
 
@@ -34,10 +36,10 @@ defmodule WebsflyerWeb do
 
       # Import convenience functions from controllers
       import Phoenix.Controller, only: [get_flash: 2, view_module: 1]
-
-      import WebsflyerWeb.Router.Helpers
       import WebsflyerWeb.ErrorHelpers
       import WebsflyerWeb.Gettext
+
+      alias WebsflyerWeb.Router.Helpers, as: Routes
     end
   end
 

@@ -33,4 +33,4 @@ Object.defineProperty(Websflyer, 'pixel', {
 
 Websflyer.PIXEL_ID = 'websflyer-pixel-tracker';
 
-Websflyer.BASE_TRACKING_URL = '<%= tracking_url(@conn, :track) %>';
+Websflyer.BASE_TRACKING_URL = '<%= Routes.tracking_url(@conn, :track) %>';

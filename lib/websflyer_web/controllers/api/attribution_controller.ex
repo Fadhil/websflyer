@@ -28,7 +28,7 @@ defmodule WebsflyerWeb.API.AttributionController do
   def render_attribution(conn, attribution) do
     conn
     |> put_status(:created)
-    |> put_resp_header("location", api_attribution_path(conn, :show, attribution))
+    |> put_resp_header("location", Routes.api_attribution_path(conn, :show, attribution))
     |> render("show.json", attribution: attribution)
   end
 

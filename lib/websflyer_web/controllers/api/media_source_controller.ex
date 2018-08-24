@@ -17,7 +17,7 @@ defmodule WebsflyerWeb.API.MediaSourceController do
            MediaSources.create_media_source(media_source_params) do
       conn
       |> put_status(:created)
-      |> put_resp_header("location", api_media_source_path(conn, :show, media_source))
+      |> put_resp_header("location", Routes.api_media_source_path(conn, :show, media_source))
       |> render("show.json", media_source: media_source)
     end
   end
