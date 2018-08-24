@@ -1,0 +1,66 @@
+version: 2
+jobs:
+  build:
+    parallelism: 1
+    docker:
+      - image: circleci/elixir:1.7.2
+        environment:
+          MIX_ENV: prod
+    working_directory: ~/app
+    steps:
+      - checkout
+      - run: mix local.hex --force
+      - run: mix local.rebar --force
+      - restore_cache:
+          keys:
+            - mix-packages-{{ checksum "mix.lock" }}
+            - mix-packages-{{ .Branch }}
+            - mix-packages
+      - restore_cache:
+          keys:
+            - build-cache-{{ .Branch }}
+            - build-cache
+      - run: mix deps.get
+      - save_cache:
+          key: mix-packages-{{ checksum "mix.lock" }}
+          paths: deps
+      - save_cache:
+          key: mix-packages-{{ .Branch }}
+          paths: deps
+      - save_cache:
+          key: mix-packages
+          paths: deps
+      - run: mix compile
+      - save_cache:
+          key: build-cache-{{ .Branch }}
+          paths: _build
+      - save_cache:
+          key: build-cache
+          paths: _build
+      # enable this when we do test
+      # - store_test_results:
+      #     path: _build/test/lib/platform
+workflows:
+  version: 2
+  build_then_deploy:
+    jobs:
+      - build:
+          filters:
+            tags:
+              only: /.*/
+      - deploy_production:
+          requires:
+            - build
+          filters:
+            tags:
+              only: /production/
+            branches:
+              ignore: /.*/
+      - deploy_staging:
+          requires:
+            - build
+          filters:
+            tags:
+              only: /staging/
+            branches:
+              ignore: /.*/
