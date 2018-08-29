@@ -1,0 +1,90 @@
+# Trigger Spotinst Deployment after Baking AMI
+- hosts:
+    localhost
+
+  vars:
+    spotinst_elastigroup_name: "websflyer-default-grp-elastigroup"
+    aws_account_id: "{{ lookup('env','PACKER_AWS_ACCOUNT_ID') }}"
+
+  tasks:
+    - name: Find old AMIs
+      ec2_ami_find:
+        owner: "{{ aws_account_id }}"
+        region: "{{ aws_default_region }}"
+        ami_tags:
+          packer_template: "websflyer-release-image"
+          env: "{{ app_environment }}"
+        sort: tag
+        sort_tag: "created_at_epoch"
+        sort_order: descending
+        sort_end: "{{ websflyer_release_ami_keep_count * 5 }}"
+        no_result_action: fail
+      register: all_websflyer_release_ami
+
+    - set_fact:
+        ami_ids_to_keep: "{{ all_websflyer_release_ami.results[:websflyer_release_ami_keep_count] | map(attribute='ami_id') | list }}"
+        all_ami_ids: "{{ all_websflyer_release_ami.results | map(attribute='ami_id') | list }}"
+      when: all_websflyer_release_ami.results | length > websflyer_release_ami_keep_count
+
+    - set_fact:
+        ami_ids_to_delete: "{{ all_ami_ids | difference(ami_ids_to_keep) | list }}"
+      when: ami_ids_to_keep is defined
+
+    - debug:
+        msg:
+          - "Keeping Up To {{ websflyer_release_ami_keep_count }} AMIs"
+          - "Keeping AMI: {{ ami_ids_to_keep | join(', ') }}"
+          - "Deleting AMI: {{ ami_ids_to_delete | join(', ') }}"
+      when: ami_ids_to_delete is defined
+
+    - name: Delete old AMI and its Snapshots
+      ec2_ami:
+        image_id: "{{ item }}"
+        delete_snapshot: True
+        region: "{{ aws_default_region }}"
+        state: absent
+      with_items: "{{ ami_ids_to_delete }}"
+      when: ami_ids_to_delete is defined
+
+    - name: Find the latest websflyer release AMI to use for the server
+      ec2_ami_find:
+        owner: "{{ aws_account_id }}"
+        region: "{{ aws_default_region }}"
+        ami_tags:
+          packer_template: "websflyer-release-image"
+        sort: tag
+        sort_tag: "created_at_epoch"
+        sort_order: descending
+        sort_end: 1
+        no_result_action: fail
+      register: websflyer_release_ami
+
+    - set_fact:
+        websflyer_release_ami_id: "{{ websflyer_release_ami.results[0].ami_id }}"
+        websflyer_release_ami_name: "{{ websflyer_release_ami.results[0].name }}"
+
+    - debug:
+        msg: "Using AMI: {{ websflyer_release_ami_id }} - {{ websflyer_release_ami_name }}"
+
+    - name: Trigger Spotinst Deployment Step Function Lambda
+      execute_lambda:
+        function_arn: "{{ spotinst_start_step_function_execution_lambda_arn }}"
+        region: "{{ aws_default_region }}"
+        payload:
+          elastigroup_name: "{{ spotinst_elastigroup_name }}"
+          ami_id: "{{ websflyer_release_ami_id }}"
+          trigger_blue_green_deployment: "{{ spotinst_trigger_blue_green_deployment }}"
+          batch_size_percentage: "{{ spotinst_batch_size_percentage }}"
+          grace_period_seconds: "{{ spotinst_grace_period_seconds }}"
+        wait: true
+      register: lambda_response
+
+    - set_fact:
+        sfn_execution_arn: "{{ lambda_response.get('result').get('output').get('result').get('execution_arn') }}"
+      when: lambda_response.get("result").get("status") == 200
+
+    - debug:
+        msg:
+          - "Successfully started Spotinst Deployment Step Function"
+          - "https://console.aws.amazon.com/states/home?#/executions/details/{{ sfn_execution_arn }}"
+      when: sfn_execution_arn is defined

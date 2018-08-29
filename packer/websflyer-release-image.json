@@ -1,0 +1,80 @@
+{
+    "variables": {
+        "home": "{{env `HOME`}}",
+        "ec2_user": "ubuntu",
+        "vagrant_user": "vagrant",
+        "websflyer_release_archive": "{{env `WEBSFLYER_RELEASE_ARCHIVE`}}",
+        "websflyer_release_env": "{{env `WEBSFLYER_RELEASE_ENV`}}",
+        "app_environment": "{{env `WEBSFLYER_RELEASE_ENV`}}",
+        "packer_aws_access_key_id": "{{env `PACKER_AWS_ACCESS_KEY_ID`}}",
+        "packer_aws_secret_access_key": "{{env `PACKER_AWS_SECRET_ACCESS_KEY`}}",
+        "packer_aws_account_id": "{{env `PACKER_AWS_ACCOUNT_ID`}}"
+    },
+    "builders": [
+        {
+            "type": "amazon-ebs",
+            "access_key": "{{user `packer_aws_access_key_id`}}",
+            "secret_key": "{{user `packer_aws_secret_access_key`}}",
+            "region": "ap-southeast-1",
+            "source_ami_filter": {
+                "filters": {
+                  "tag:packer_template": "baseimage-websflyer-cd"
+                },
+                "owners": ["{{user `packer_aws_account_id`}}"],
+                "most_recent": true
+            },
+            "instance_type": "c5.xlarge",
+            "spot_price": "auto",
+            "spot_price_auto_product": "Linux/UNIX",
+            "ssh_username": "{{user `ec2_user`}}",
+            "iam_instance_profile": "websflyer-ec2-role",
+            "ami_name": "packer-websflyer-release-image_{{user `app_environment`}}_{{isotime \"2006.01.02.1504\"}}_{{user `websflyer_release_archive`}}",
+            "tags": {
+              "packer_template": "websflyer-release-image",
+              "release_archive": "{{user `websflyer_release_archive`}}",
+              "created_at_epoch": "{{timestamp}}",
+              "env": "{{user `app_environment`}}"
+            }
+        },
+        {
+            "type": "virtualbox-ovf",
+            "source_path": "base_box/box.ovf",
+            "ssh_username": "{{user `vagrant_user`}}",
+            "ssh_password": "vagrant",
+            "headless": true,
+            "shutdown_command": "echo 'packer' | sudo -S shutdown -P now"
+        }
+    ],
+    "provisioners": [
+        {
+            "type": "shell",
+            "inline": [
+                "while pgrep unattended; do echo 'Waiting for apt-daily service to finish starting up...'; sleep 10; done"
+            ]
+        },
+        {
+            "type": "ansible",
+            "user": "ubuntu",
+            "playbook_file": "./ansible/websflyer-app-release.yml",
+            "host_alias": "packer_hosts",
+            "groups": ["websflyer-app-cd"],
+            "inventory_directory": "./ansible/inventories/{{user `app_environment`}}",
+            "extra_arguments": [
+              "--extra-vars",
+              "websflyer_release_archive={{user `websflyer_release_archive`}} websflyer_release_env={{user `websflyer_release_env`}}"
+            ],
+            "ansible_env_vars": [
+              "ANSIBLE_RETRY_FILES_ENABLED=0"
+            ]
+        }
+    ],
+    "post-processors": [
+        {
+            "type": "vagrant",
+            "compression_level": 6,
+            "only": ["virtualbox-ovf"],
+            "output": "build/packer-websflyer-release-image_{{.Provider}}_{{isotime \"2006.01.02.1504\"}}_{{user `websflyer_release_archive`}}.box",
+            "vagrantfile_template": "templates/Vagrantfile_2CPU_1024MEM"
+        }
+    ]
+}

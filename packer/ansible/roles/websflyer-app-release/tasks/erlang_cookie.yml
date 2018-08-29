@@ -1,0 +1,23 @@
+- stat:
+    path: "/home/{{ deployment_user }}/.erlang.cookie"
+  register: erlang_cookie_file
+
+- name: Set correct permission for .erlang_cookie file
+  file:
+    path: "/home/{{ deployment_user }}/.erlang.cookie"
+    owner: "{{ deployment_user }}"
+    group: "{{ deployment_user }}"
+    mode: "0400"
+  become: true
+  when: erlang_cookie_file.stat.exists
+
+- name: Ensure .erlang_cookie file exists
+  copy:
+    content: "{{ lookup('password', '/tmp/passwordfile length=30') }}"
+    dest: "/home/{{ deployment_user }}/.erlang.cookie"
+    force: no
+    owner: "{{ deployment_user }}"
+    group: "{{ deployment_user }}"
+    mode: "0400"
+  become: true
+  when: not erlang_cookie_file.stat.exists

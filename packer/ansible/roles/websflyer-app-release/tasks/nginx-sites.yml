@@ -1,0 +1,26 @@
+- name: Copy fave app's nginx config
+  template:
+    src: "websflyer_app.conf.j2"
+    dest: "/etc/nginx/sites-available/websflyer_app-{{ app_environment }}.conf"
+  become: true
+  tags: nginx_config
+  notify: reload nginx
+
+- name: Create nginx extra location directory for app
+  file:
+    path: "/etc/nginx/{{ item }}/locations"
+    state: "directory"
+    mode: "0755"
+  with_items:
+    - "{{ websflyer_app_host }}"
+  become: true
+
+- name: Enable the sites
+  file:
+    src: "/etc/nginx/sites-available/{{ item }}.conf"
+    dest: "/etc/nginx/sites-enabled/{{ item }}.conf"
+    state: link
+  with_items:
+    - "websflyer_app-{{ app_environment }}"
+  become: true
+  notify: reload nginx

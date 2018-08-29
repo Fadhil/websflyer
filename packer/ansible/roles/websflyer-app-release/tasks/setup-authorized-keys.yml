@@ -1,0 +1,12 @@
+---
+# This task setup the authorized_keys
+
+- name: Modify authorized_keys for user
+  authorized_key:
+    user: "{{ item.username }}"
+    state: present
+    key: "{{ lookup('file', '{{ item.pub_key_file }}') }}"
+    manage_dir: yes
+    exclusive: yes
+  become: true
+  with_items: "{{ authorized_users }}"

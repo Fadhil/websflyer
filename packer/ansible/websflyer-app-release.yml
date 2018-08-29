@@ -1,0 +1,5 @@
+# Create Websflyer Release
+- hosts:
+    websflyer-app-cd
+  roles:
+    - websflyer-app-release

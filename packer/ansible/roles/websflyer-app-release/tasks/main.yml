@@ -1,0 +1,26 @@
+---
+# This playbook installs the deploy the release archive on the instance
+
+- name: Get Websflyer Release Archive
+  aws_s3:
+    bucket: "{{ release_s3_bucket }}"
+    object: "releases/{{ platform_release_archive }}"
+    dest: "/tmp/{{ platform_release_archive }}"
+    mode: get
+  become: true
+  become_user: "{{ deployment_user}}"
+
+- name: Extract Websflyer Release Archive
+  unarchive:
+    src: "/tmp/{{ platform_release_archive }}"
+    dest: "{{ platform_app_home_path }}"
+    remote_src: True
+  become: true
+  become_user: "{{ deployment_user}}"
+
+- import_tasks: nginx-sites.yml
+
+- import_tasks: erlang_cookie.yml
+
+# This should be last step because it will remove Packer SSH Key
+- import_tasks: setup-authorized-keys.yml

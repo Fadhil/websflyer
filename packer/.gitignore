@@ -1,0 +1,39 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Credentials
+uservars.json
+ansible/production_vault_password.yml
+ansible/staging_vault_password.yml
+ansible/vault/*.yml
+ansible/vault/*.yml
+
+# Ansible
+*.retry
+
+# Virtualenv
+bin/
+include/
+lib/
+lib64
+lib64/
+pip-selfcheck.json
+pyvenv.cfg
+
+# Artifacts
+output-virtualbox-ovf/
+base_box
+packer_cache/
+build/
+
+# Mac
+.DS_Store
+.Python
+
+# Virtual Env
+venv
+
+# Local Credentials
+local_build.env

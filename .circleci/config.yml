@@ -68,7 +68,34 @@ jobs:
           echo 'export AWS_ACCESS_KEY_ID="$AWS_ACCESS_KEY_ID_PRODUCTION"' >> $BASH_ENV
           echo 'export REVISION=$(echo $CIRCLE_SHA1 | cut -c -9)' >> $BASH_ENV
           source $BASH_ENV
-      - run: aws s3 cp /tmp/workspace/releases/$REVISION/websflyer.tar.gz s3://fave-websflyer-ci-builds-production/releases/$REVISION.tar.gz
+      - run: aws s3 cp /tmp/workspace/releases/$REVISION/websflyer.tar.gz s3://websflyer-ci-builds-production/releases/$REVISION.tar.gz
+  packer_deploy_staging:
+    parallelism: 1
+    docker:
+      - image: hashicorp/packer:1.2.5
+    steps:
+      - run:
+          name: Install OpenSSH
+          command: apk --no-cache add openssh
+      - run:
+          name: Install python 2.7
+          command: apk --no-cache add python python-dev py-pip
+      - run:
+          name: Install Other Build Dependencies
+          command: apk --no-cache add libffi-dev build-base openssl-dev
+      - checkout
+      - run: pip install --upgrade -r packer/requirements.txt
+      - run: |
+          echo 'export WEBSFLYER_RELEASE_ARCHIVE=$(echo $CIRCLE_SHA1 | cut -c -9).tar.gz' >> $BASH_ENV
+          echo 'export WEBSFLYER_RELEASE_ENV=staging' >> $BASH_ENV
+          echo 'export AWS_ACCESS_KEY_ID="$AWS_ACCESS_KEY_ID_STAGING"' >> $BASH_ENV
+          echo 'export AWS_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY_STAGING"' >> $BASH_ENV
+          echo 'export PACKER_AWS_ACCESS_KEY_ID="$AWS_ACCESS_KEY_ID_STAGING"' >> $BASH_ENV
+          echo 'export PACKER_AWS_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY_STAGING"' >> $BASH_ENV
+          echo 'export PACKER_AWS_ACCOUNT_ID="$PACKER_AWS_ACCOUNT_ID_STAGING"' >> $BASH_ENV
+          source $BASH_ENV
+      - run: (cd packer && packer build -only=amazon-ebs websflyer-release-image.json)
+      - run: (cd packer && ansible-playbook -i ansible/inventories/staging ansible/websflyer-trigger-deploy.yml)
 workflows:
   version: 2
   build_then_deploy:
@@ -88,6 +115,14 @@ workflows:
       - deploy_staging:
           requires:
             - build
+          filters:
+            tags:
+              only: /staging/
+            branches:
+              ignore: /.*/
+      - packer_deploy_staging:
+          requires:
+            - deploy_staging
           filters:
             tags:
               only: /staging/

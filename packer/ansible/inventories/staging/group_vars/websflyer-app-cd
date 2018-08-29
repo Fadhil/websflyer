@@ -1,0 +1,18 @@
+release_s3_bucket: "websflyer-ci-builds-staging"
+websflyer_app_home_path: /var/www/websflyer
+websflyer_app_host: websflyer.internal.fave.ninja
+
+# Nginx Setting
+websflyer_app_nginx_server_name: "{{ websflyer_app_host }}"
+
+# Authorized Keys
+authorized_users: [
+  {
+    "username": "{{ ansible_user }}",
+    "pub_key_file": "{{ app_environment }}/authorized_keys-admin"
+  },
+  {
+    "username": "{{ deployment_user }}",
+    "pub_key_file": "{{ app_environment }}/authorized_keys-users"
+  }
+]
