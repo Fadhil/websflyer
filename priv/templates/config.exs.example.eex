@@ -1,0 +1,3 @@
+use Mix.Config
+
+# Rename this file to config.exs and write your configuration overrides

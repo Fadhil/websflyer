@@ -42,7 +42,7 @@ defmodule Websflyer.Mixfile do
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"},
       {:jason, "~> 1.1"},
-      {:distillery, "~> 1.5", runtime: false},
+      {:distillery, "~> 2.0", runtime: false},
       {:excoveralls, "~> 0.9", only: [:dev, :test]}
     ]
   end
