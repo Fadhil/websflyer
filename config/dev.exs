@@ -51,3 +51,5 @@ config :websflyer, Websflyer.Repo,
   database: "websflyer_dev",
   hostname: "localhost",
   pool_size: 10
+
+import_config "dev.secret.exs"
