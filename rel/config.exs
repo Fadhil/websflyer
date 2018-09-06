@@ -9,7 +9,7 @@
 
 commit_sha =
   "git"
-  |> System.cmd(["rev-parse", "--short", "HEAD"])
+  |> System.cmd(["rev-parse", "--short=7", "HEAD"])
   |> elem(0)
   |> String.trim_trailing()
 
