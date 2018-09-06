@@ -1,6 +1,13 @@
 ---
 # This playbook installs the deploy the release archive on the instance
 
+- name: Copy config.exs
+  template:
+    src: "config.exs.j2"
+    dest: "{{ websflyer_app_home_path }}/config/config.exs"
+  become: true
+  become_user: "{{ deployment_user }}"
+
 - name: Get Websflyer Release Archive
   aws_s3:
     bucket: "{{ release_s3_bucket }}"

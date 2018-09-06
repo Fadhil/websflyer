@@ -16,3 +16,7 @@ authorized_users: [
     "pub_key_file": "{{ app_environment }}/authorized_keys-users"
   }
 ]
+
+# DB Config
+db_default_pool_size: 5
+db_default_overflow_size: "{{ db_default_pool_size * 2}}"
