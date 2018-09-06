@@ -25,7 +25,7 @@ config :ecto, :json_library, Jason
 config :phoenix, :format_encoders, json: Jason
 
 config :websflyer, Websflyer.Repo,
-  adapter: Ecto.Adapters.Postgres
+  adapter: Ecto.Adapters.Postgres,
   pool_size: {{ db_default_pool_size }}
 
 # Import environment specific config. This must remain at the bottom
