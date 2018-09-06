@@ -3,7 +3,7 @@
     localhost
 
   vars:
-    spotinst_elastigroup_name: "websflyer-default-grp-elastigroup"
+    spotinst_elastigroup_name: "websflyer-{{ app_environment }}-grp-elastigroup"
     aws_account_id: "{{ lookup('env','PACKER_AWS_ACCOUNT_ID') }}"
 
   tasks:
