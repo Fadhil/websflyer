@@ -4,7 +4,7 @@ defmodule Websflyer.Mixfile do
   def project do
     [
       app: :websflyer,
-      version: "0.0.4",
+      version: revision(),
       elixir: "~> 1.7",
       elixirc_paths: elixirc_paths(Mix.env()),
       compilers: [:phoenix, :gettext] ++ Mix.compilers(),
@@ -42,7 +42,7 @@ defmodule Websflyer.Mixfile do
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"},
       {:jason, "~> 1.1"},
-      {:distillery, "~> 2.0", runtime: false},
+      {:distillery, github: "bitwalker/distillery"},
       {:excoveralls, "~> 0.9", only: [:dev, :test]}
     ]
   end
@@ -59,5 +59,11 @@ defmodule Websflyer.Mixfile do
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ecto.create --quiet", "ecto.migrate", "test"]
     ]
+  end
+
+  defp revision do
+    System.cmd("git", ["rev-parse", "--short", "HEAD"])
+    |> elem(0)
+    |> String.trim_trailing()
   end
 end
