@@ -86,7 +86,7 @@ jobs:
       - checkout
       - run: pip install --upgrade -r packer/requirements.txt
       - run: |
-          echo 'export WEBSFLYER_RELEASE_ARCHIVE=$(echo $CIRCLE_SHA1 | cut -c -9).tar.gz' >> $BASH_ENV
+          echo 'export WEBSFLYER_RELEASE_ARCHIVE=$(echo $CIRCLE_SHA1 | cut -c -7).tar.gz' >> $BASH_ENV
           echo 'export WEBSFLYER_RELEASE_ENV=staging' >> $BASH_ENV
           echo 'export AWS_ACCESS_KEY_ID="$AWS_ACCESS_KEY_ID_STAGING"' >> $BASH_ENV
           echo 'export AWS_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY_STAGING"' >> $BASH_ENV
