@@ -8,7 +8,8 @@
 |> Enum.map(&Code.eval_file(&1))
 
 commit_sha =
-  System.cmd("git", ["rev-parse", "--short", "HEAD"])
+  "git"
+  |> System.cmd(["rev-parse", "--short", "HEAD"])
   |> elem(0)
   |> String.trim_trailing()
 
