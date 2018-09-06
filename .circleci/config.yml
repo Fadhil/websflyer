@@ -30,7 +30,6 @@ jobs:
       - save_cache:
           key: mix-packages
           paths: deps
-      - run: MIX_ENV=test mix test
       - run: mix compile
       - save_cache:
           key: build-cache-{{ .Branch }}
