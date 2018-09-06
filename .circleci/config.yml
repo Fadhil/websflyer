@@ -54,7 +54,7 @@ jobs:
           echo 'export AWS_ACCESS_KEY_ID="$AWS_ACCESS_KEY_ID_STAGING"' >> $BASH_ENV
           echo 'export REVISION=$(echo $CIRCLE_SHA1 | cut -c -9)' >> $BASH_ENV
           source $BASH_ENV
-      - run: aws s3 cp /tmp/workspace/releases/$REVISION/websflyer.tar.gz s3://fave-websflyer-ci-builds-staging/releases/$REVISION.tar.gz
+      - run: aws s3 cp /tmp/workspace/releases/$REVISION/websflyer.tar.gz s3://websflyer-ci-builds-staging/releases/$REVISION.tar.gz
   deploy_production:
     parallelism: 1
     docker:
