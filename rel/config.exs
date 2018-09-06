@@ -7,6 +7,11 @@
 |> Path.wildcard()
 |> Enum.map(&Code.eval_file(&1))
 
+commit_sha =
+  System.cmd("git", ["rev-parse", "--short", "HEAD"])
+  |> elem(0)
+  |> String.trim_trailing()
+
 use Mix.Releases.Config,
     # This sets the default release built by `mix release`
     default_release: :default,
@@ -46,7 +51,7 @@ end
 # will be used by default
 
 release :websflyer do
-  set version: current_version(:websflyer)
+  set version: commit_sha
   set applications: [
     :runtime_tools
   ]
@@ -57,4 +62,3 @@ release :websflyer do
     {:template, "priv/templates/config.exs.example.eex", "config/config.exs.example"}
   ]
 end
-

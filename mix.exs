@@ -4,7 +4,7 @@ defmodule Websflyer.Mixfile do
   def project do
     [
       app: :websflyer,
-      version: revision(),
+      version: "1.0.0",
       elixir: "~> 1.7",
       elixirc_paths: elixirc_paths(Mix.env()),
       compilers: [:phoenix, :gettext] ++ Mix.compilers(),
@@ -59,11 +59,5 @@ defmodule Websflyer.Mixfile do
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ecto.create --quiet", "ecto.migrate", "test"]
     ]
-  end
-
-  defp revision do
-    System.cmd("git", ["rev-parse", "--short", "HEAD"])
-    |> elem(0)
-    |> String.trim_trailing()
   end
 end
