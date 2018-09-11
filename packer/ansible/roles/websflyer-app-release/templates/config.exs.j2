@@ -20,6 +20,11 @@ config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:user_id]
 
+{% if app_environment == 'production' %}
+# Do not print debug messages in production
+config :logger, level: :info
+{% endif %}
+
 # Configure JSON library
 config :ecto, :json_library, Jason
 config :phoenix, :format_encoders, json: Jason
