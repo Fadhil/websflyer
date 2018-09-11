@@ -16,6 +16,7 @@
             "access_key": "{{user `packer_aws_access_key_id`}}",
             "secret_key": "{{user `packer_aws_secret_access_key`}}",
             "region": "ap-southeast-1",
+            "availability_zone": "ap-southeast-1b",
             "source_ami_filter": {
                 "filters": {
                   "tag:packer_template": "baseimage-websflyer-cd"

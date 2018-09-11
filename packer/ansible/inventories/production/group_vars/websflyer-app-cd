@@ -1,6 +1,6 @@
 release_s3_bucket: "websflyer-ci-builds-production"
 websflyer_app_home_path: /var/www/websflyer
-websflyer_app_host: websflyer.internal.fave.ninja
+websflyer_app_host: websflyer.internal.myfave.com
 
 # Nginx Setting
 websflyer_app_nginx_server_name: "{{ websflyer_app_host }}"
