@@ -13,6 +13,7 @@ defmodule WebsflyerWeb.Router do
   scope "/", WebsflyerWeb do
     pipe_through :browser
 
+    get "/okcomputer", HealthController, :index
     get "/track.gif", TrackingController, :track
     get "/tracker.js", TrackingController, :tracker
   end
