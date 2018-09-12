@@ -1,5 +1,7 @@
 # Websflyer
 
+[![CircleCI](https://circleci.com/gh/kfit-dev/websflyer.svg?style=svg&circle-token=73f5fe80ad00fa7b95a8580a06a7c248710b9912)](https://circleci.com/gh/kfit-dev/websflyer)
+
 To start your Phoenix server:
 
   * Install dependencies with `mix deps.get`
