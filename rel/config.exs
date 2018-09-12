@@ -36,7 +36,7 @@ environment :dev do
   # the --env flag to Distillery explicitly if you want to use
   # dev mode.
   set dev_mode: true
-  set include_erts: false
+  set include_erts: true
   set cookie: :"<K$`MxdQ`b4cJckAk5gPPR89wtavll:):JbWz>Tc1S0O3|wcYb6wuA`byJ<!>~.S"
 end
 
@@ -53,6 +53,7 @@ end
 
 release :websflyer do
   set version: commit_sha
+  set pre_start_hooks: "rel/hooks/pre_start.d"
   set applications: [
     :runtime_tools
   ]
@@ -61,5 +62,8 @@ release :websflyer do
   ]
   set overlays: [
     {:template, "priv/templates/config.exs.example.eex", "config/config.exs.example"}
+  ]
+  set commands: [
+    migrate: "rel/commands/migrate.sh"
   ]
 end
