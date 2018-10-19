@@ -9,13 +9,15 @@ defmodule WebsFlyer.Affiliates.Attributions do
   alias WebsFlyer.Affiliates.{MediaSources, UserAttributions}
   alias WebsFlyer.Affiliates.Schemas.{Attribution, UserAttribution}
   import Ecto.Query, only: [from: 2]
-  import Ecto.Changeset
   require Logger
+
   @doc """
   Returns the list of attributions.
   """
   def list_attributions do
-    Repo.all(Attribution)
+    query = from a in Attribution,
+      order_by: [desc: a.inserted_at]
+    Repo.all(query)
   end
 
   @doc """
